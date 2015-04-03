@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic', 'starter.controllers', 'ion-google-place'])
+angular.module('starter', ['ionic', 'starter.controllers', 'ion-google-place', 'uber'])
 
   .run(function ($ionicPlatform) {
     $ionicPlatform.ready(function() {
@@ -47,40 +47,40 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ion-google-place'])
     };
 })
 
-    .controller('Uber', function ($scope, $ionicModal, $timeout) {
+    // .controller('Uber', function ($scope, $ionicModal, $timeout) {
 
-        $scope.getEstimatesForUserLocation = function (latitude, longitude) {
-      var source = "West Peachtree Street Northwest, Atlanta, GA, United States";
-      var sourceLatitude = -84.3872821;
-      var sourceLongitude = 33.7788652;
+    //     $scope.getEstimatesForUserLocation = function (latitude, longitude) {
+    //       var source = "West Peachtree Street Northwest, Atlanta, GA, United States";
+    //       var sourceLatitude = 33.7788652;
+    //       var sourceLongitude = -84.3872821;
 
-      var destination = "Atlanta Marriott Marquis, Peachtree Center Avenue Northeast, Atlanta, GA, United States";
-      var destinationLatitude = -84.38555600000001;
-      var destinationLongitude = 33.761506;
+    //       var destination = "Atlanta Marriott Marquis, Peachtree Center Avenue Northeast, Atlanta, GA, United States";
+    //       var destinationLatitude = 33.761506;
+    //       var destinationLongitude = -84.38555600000001;
 
-      // CHANGE FOR SECURITY
-      var uberClientId = "MibBLkhaD19lbPQpU03xCnkdbyO0K-z7";
-      var uberServerToken = "N1zzwuD4_gO807UsUvXF2Ba9KOmurCAn-EgLujh8";
+    //       // CHANGE FOR SECURITY
+    //       var uberClientId = "MibBLkhaD19lbPQpU03xCnkdbyO0K-z7";
+    //       var uberServerToken = "N1zzwuD4_gO807UsUvXF2Ba9KOmurCAn-EgLujh8";
 
-      console.log("hit");
+    //       console.log("hit");
       
-          $.ajax({
-            url: "https://api.uber.com/v1/estimates/time",
-            headers: {
-              Authorization: "Token " + uberServerToken
-            },
-            data: {
-              start_latitude: sourceLatitude,
-              start_longitude: sourceLongitude,
-              end_latitude: destinationLatitude,
-              end_longitude: destinationLongitude
-            },
-            success: function(result) {
-              console.log(result);
-            }
-          });
-        };
-    })
+    //       $.ajax({
+    //         url: "https://api.uber.com/v1/estimates/time",
+    //         headers: {
+    //           Authorization: "Token " + uberServerToken
+    //         },
+    //         data: {
+    //           start_latitude: sourceLatitude,
+    //           start_longitude: sourceLongitude,
+    //           end_latitude: destinationLatitude,
+    //           end_longitude: destinationLongitude
+    //         },
+    //         success: function(result) {
+    //           console.log(result);
+    //         }
+    //       });
+    //     };
+    // })
 
   .controller('MyCtrl', function ($scope) {
     $scope.gPlace;
