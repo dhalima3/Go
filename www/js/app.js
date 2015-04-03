@@ -24,8 +24,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ion-google-place', '
         scope: {
             ngModel: '=',
             details: '=?',
-            latitude: '=?',
-            longitude: '=?'
+            latitude: '=',
+            longitude: '='
         },
         link: function(scope, element, attrs, model) {
             var options = {
@@ -35,10 +35,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ion-google-place', '
  
             google.maps.event.addListener(scope.gPlace, 'place_changed', function() {
                 scope.$apply(function() {
-                    console.log("D: " + scope.gPlace.getPlace().geometry.location.D);
-                    console.log("k: " + scope.gPlace.getPlace().geometry.location.k);
-                    scope.latitude = scope.gPlace.getPlace().geometry.location.D;
-                    scope.longitude = scope.gPlace.getPlace().geometry.location.k;
+                    console.log("D: " + scope.gPlace.getPlace().geometry.location.k);
+                    console.log("k: " + scope.gPlace.getPlace().geometry.location.D);
+                    scope.latitude = scope.gPlace.getPlace().geometry.location.k;
+                    scope.longitude = scope.gPlace.getPlace().geometry.location.D;
                     scope.details = scope.gPlace.getPlace();
                     model.$setViewValue(element.val());                
                 });
@@ -84,6 +84,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ion-google-place', '
 
   .controller('MyCtrl', function ($scope) {
     $scope.gPlace;
+    $scope.latitude;
+    $scope.longitude;
+    console.log($scope.latitude);
   })
 
   .config(function ($stateProvider, $urlRouterProvider) {
