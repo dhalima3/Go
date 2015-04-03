@@ -37,6 +37,40 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ion-google-place'])
     };
   })
 
+
+.directive('googleplace2', function() {
+    return {
+        require: 'ngModel',
+        scope: {
+            ngModel: '=',
+            details: '=?',
+            latitude: '=?',
+            longitude: '=?'
+        },
+        link: function(scope, element, attrs, model) {
+            var options = {
+                types: [],
+            };
+            scope.gPlace = new google.maps.places.Autocomplete(element[0], options);
+ 
+            google.maps.event.addListener(scope.gPlace, 'place_changed', function() {
+                scope.$apply(function() {
+                    console.log("D: " + scope.gPlace.getPlace().geometry.location.D);
+                    console.log("k: " + scope.gPlace.getPlace().geometry.location.k);
+                    scope.latitude = scope.gPlace.getPlace().geometry.location.D;
+                    scope.longitude = scope.gPlace.getPlace().geometry.location.k;
+                    scope.details = scope.gPlace.getPlace();
+                    model.$setViewValue(element.val());                
+                });
+            });
+        }
+    };
+})
+
+.controller('MyCtrl', function ($scope) {
+  $scope.gPlace;
+})
+
   .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
 
