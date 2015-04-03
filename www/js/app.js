@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic', 'starter.controllers', 'ion-google-place'])
+angular.module('starter', ['ionic', 'starter.controllers', 'ion-google-place', 'uber'])
 
   .run(function ($ionicPlatform) {
     $ionicPlatform.ready(function() {
@@ -47,9 +47,44 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ion-google-place'])
     };
 })
 
-.controller('MyCtrl', function ($scope) {
-  $scope.gPlace;
-})
+    .controller('Uber', function ($scope, $ionicModal, $timeout) {
+
+        $scope.getEstimatesForUserLocation = function (latitude, longitude) {
+      var source = "West Peachtree Street Northwest, Atlanta, GA, United States";
+      var sourceLatitude = -84.3872821;
+      var sourceLongitude = 33.7788652;
+
+      var destination = "Atlanta Marriott Marquis, Peachtree Center Avenue Northeast, Atlanta, GA, United States";
+      var destinationLatitude = -84.38555600000001;
+      var destinationLongitude = 33.761506;
+
+      // CHANGE FOR SECURITY
+      var uberClientId = "MibBLkhaD19lbPQpU03xCnkdbyO0K-z7";
+      var uberServerToken = "4m8o0HB-w9FF6_sENHCs-0VWaPfVxDKHU1lkWSfG";
+
+      console.log("hit");
+      
+          $.ajax({
+            url: "https://api.uber.com/v1/estimates/price",
+            headers: {
+              Authorization: "Token " + uberServerToken
+            },
+            data: {
+              start_latitude: sourceLatitude,
+              start_longitude: sourceLongitude,
+              end_latitude: destinationLatitude,
+              end_longitude: destinationLongitude
+            },
+            success: function(result) {
+              console.log(result);
+            }
+          });
+        };
+    })
+
+  .controller('MyCtrl', function ($scope) {
+    $scope.gPlace;
+  })
 
   .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
@@ -65,7 +100,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ion-google-place'])
         views: {
             'menuContent': {
               templateUrl: "templates/request.html",
-              controller: 'PostRequestController'
+              controller: 'Uber'
+              // ADD LYFT
             }
           }
       });
