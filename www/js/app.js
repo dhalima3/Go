@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic', 'starter.controllers', 'ion-google-place', 'uber'])
+angular.module('starter', ['ionic', 'starter.controllers', 'ion-google-place'])
 
   .run(function ($ionicPlatform) {
     $ionicPlatform.ready(function() {
@@ -60,12 +60,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ion-google-place', '
 
       // CHANGE FOR SECURITY
       var uberClientId = "MibBLkhaD19lbPQpU03xCnkdbyO0K-z7";
-      var uberServerToken = "4m8o0HB-w9FF6_sENHCs-0VWaPfVxDKHU1lkWSfG";
+      var uberServerToken = "N1zzwuD4_gO807UsUvXF2Ba9KOmurCAn-EgLujh8";
 
       console.log("hit");
       
           $.ajax({
-            url: "https://api.uber.com/v1/estimates/price",
+            url: "https://api.uber.com/v1/estimates/time",
             headers: {
               Authorization: "Token " + uberServerToken
             },
