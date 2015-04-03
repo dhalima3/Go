@@ -18,27 +18,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ion-google-place'])
     });
   })
 
-  .directive('googleplace', function() {
-    return {
-      require: 'ngModel',
-      link: function(scope, element, attrs, model) {
-        var options = {
-          types: []
-        };
-        scope.gPlace = new google.maps.places.Autocomplete(element[0], options);
-
-        google.maps.event.addListener(scope.gPlace, 'place_changed', function() {
-          scope.$apply(function() {
-            console.log(scope.gPlace);
-            model.$setViewValue(element.val());
-          });
-        });
-      }
-    };
-  })
-
-
-.directive('googleplace2', function() {
+.directive('googleplace', function() {
     return {
         require: 'ngModel',
         scope: {
