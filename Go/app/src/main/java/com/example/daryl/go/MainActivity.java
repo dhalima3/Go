@@ -4,11 +4,17 @@ import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,6 +27,7 @@ public class MainActivity extends ActionBarActivity {
     private GoogleMap googleMap;
     private AutoCompleteTextView mSourceAutoComplete;
     private AutoCompleteTextView mDestinationAutoComplete;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +36,74 @@ public class MainActivity extends ActionBarActivity {
 
         mSourceAutoComplete = (AutoCompleteTextView) findViewById(R.id.pickUpEdit);
         mDestinationAutoComplete = (AutoCompleteTextView) findViewById(R.id.dropEdit);
+
+        mSourceAutoComplete.setOnClickListener(new AdapterView.OnItemClickListener() {
+           @Override
+           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+               String place = ((TextView) view).getText().toString();
+               onItemSelected(place, mSourceAutoComplete);
+           }
+        });
+
+        mDestinationAutoComplete.setOnClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String place = ((TextView) view).getText().toString();
+                onItemSelected(place, mDestinationAutoComplete);
+            }
+        });
+
+        mSourceAutoComplete.setThreshold(3);
+        mDestinationAutoComplete.setThreshold(3);
+
+        mSourceAutoComplete.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(final Editable s) {
+                handler.removeCallbacks(null);
+                handler.removeCallbacksAndMessages(null);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        searchPlaces(s, mSourceAutoComplete);
+                    }
+                }, 1000);
+            }
+        });
+
+        mDestinationAutoComplete.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(final Editable s) {
+                handler.removeCallbacks(null);
+                handler.removeCallbacksAndMessages(null);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        searchPlaces(s, mDestinationAutoComplete);
+                    }
+                }, 1000);
+            }
+        });
+
         zoomMapCurrentLocation();
     }
 
@@ -83,5 +158,10 @@ public class MainActivity extends ActionBarActivity {
 
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
+    }
+
+    //TODO Refactor in order to use recommended google places api guidelines
+    private void searchPlaces(Editable s, final AutoCompleteTextView view){
+
     }
 }
