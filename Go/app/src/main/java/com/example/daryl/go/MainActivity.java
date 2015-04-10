@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
+import com.example.daryl.go.helpers.Secrets;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -162,6 +164,12 @@ public class MainActivity extends ActionBarActivity {
 
     //TODO Refactor in order to use recommended google places api guidelines
     private void searchPlaces(Editable s, final AutoCompleteTextView view){
-
+        String inputQuery = s.toString();
+        if (inputQuery.isEmpty()) {
+            return;
+        }
+        StringBuilder urlBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=")
+                .append(Uri.encode(inputQuery))
+                .append("&key=" + Secrets.PLACES_API_KEY);
     }
 }
