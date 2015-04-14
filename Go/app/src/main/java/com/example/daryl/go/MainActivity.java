@@ -10,18 +10,30 @@ import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
-import com.example.daryl.go.helpers.Secrets;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.example.daryl.go.helpers.Secrets;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -30,6 +42,8 @@ public class MainActivity extends ActionBarActivity {
     private AutoCompleteTextView mSourceAutoComplete;
     private AutoCompleteTextView mDestinationAutoComplete;
     private Handler handler;
+    private ArrayList<String> mAddresses = new ArrayList<String>();
+    private RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +54,11 @@ public class MainActivity extends ActionBarActivity {
         mDestinationAutoComplete = (AutoCompleteTextView) findViewById(R.id.dropEdit);
 
         mSourceAutoComplete.setOnClickListener(new AdapterView.OnItemClickListener() {
-           @Override
-           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               String place = ((TextView) view).getText().toString();
-               onItemSelected(place, mSourceAutoComplete);
-           }
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String place = ((TextView) view).getText().toString();
+                onItemSelected(place, mSourceAutoComplete);
+            }
         });
 
         mDestinationAutoComplete.setOnClickListener(new AdapterView.OnItemClickListener() {
@@ -162,6 +176,10 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    public void onItemSelected(String place, AutoCompleteTextView view) {
+
+    }
+
     //TODO Refactor in order to use recommended google places api guidelines
     private void searchPlaces(Editable s, final AutoCompleteTextView view){
         String inputQuery = s.toString();
@@ -170,6 +188,50 @@ public class MainActivity extends ActionBarActivity {
         }
         StringBuilder urlBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=")
                 .append(Uri.encode(inputQuery))
-                .append("&key=" + Secrets.PLACES_API_KEY);
+                .append("&key=" + Secrets.PLACES_API_KEY)
+                .append("&location=")
+                .append(googleMap.getMyLocation().getLatitude() + "," + googleMap.getMyLocation().getLongitude());
+
+        String url = new String(urlBuilder);
+        Log.d(getClass().getSimpleName(), url);
+
+//        TODO: Use Retrofit instead of Volley
+//        Request a string response from the provided URL
+
+        Response.ErrorListener responseErrorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error != null) {
+                    Log.d("Error Response", error.getMessage());
+                }
+            }
+        };
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener() {
+
+                    @Override
+                    public void onResponse(Object response) {
+                        try {
+                            JSONObject responsePlaces = new JSONObject((String) response);
+                            JSONArray predictionsArray = responsePlaces.getJSONArray("predictions");
+                            mAddresses.clear();
+                            for (int i = 0; i < predictionsArray.length(); i++) {
+                                JSONObject predictionObject = predictionsArray.getJSONObject(i);
+                                String description = predictionObject.getString("description");
+                                mAddresses.add(description);
+                            }
+//                            TODO: Multiple adapters?
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, mAddresses);
+                            view.setAdapter(adapter);
+                            view.showDropDown();
+                            Log.d(getClass().getSimpleName(), mAddresses.toString());
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }, responseErrorListener);
+
+        requestQueue.add(stringRequest);
     }
 }
