@@ -28,6 +28,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.daryl.go.helpers.Secrets;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -42,7 +43,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class MainActivity extends ActionBarActivity implements LocationListener {
 
@@ -65,6 +65,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         mDestinationAutoComplete = (AutoCompleteTextView) findViewById(R.id.dropEdit);
 
         handler = new Handler();
+        requestQueue = Volley.newRequestQueue(this);
 
         mSourceAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
