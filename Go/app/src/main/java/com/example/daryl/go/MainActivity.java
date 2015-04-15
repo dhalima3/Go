@@ -1,8 +1,11 @@
 package com.example.daryl.go;
 
 import android.content.Context;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -29,14 +33,17 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements LocationListener {
 
     private GoogleMap googleMap;
     private AutoCompleteTextView mSourceAutoComplete;
@@ -44,6 +51,9 @@ public class MainActivity extends ActionBarActivity {
     private Handler handler;
     private ArrayList<String> mAddresses = new ArrayList<String>();
     private RequestQueue requestQueue;
+    private Marker sourceMarker;
+    private Marker destinationMarker;
+    private LatLng destinationLatLng = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +63,9 @@ public class MainActivity extends ActionBarActivity {
         mSourceAutoComplete = (AutoCompleteTextView) findViewById(R.id.pickUpEdit);
         mDestinationAutoComplete = (AutoCompleteTextView) findViewById(R.id.dropEdit);
 
-        mSourceAutoComplete.setOnClickListener(new AdapterView.OnItemClickListener() {
+        handler = new Handler();
+
+        mSourceAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String place = ((TextView) view).getText().toString();
@@ -61,7 +73,7 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        mDestinationAutoComplete.setOnClickListener(new AdapterView.OnItemClickListener() {
+        mDestinationAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String place = ((TextView) view).getText().toString();
@@ -160,24 +172,60 @@ public class MainActivity extends ActionBarActivity {
             myLocation = locationManager.getLastKnownLocation(provider);
         }
 
-        if (myLocation != null) {
-//          Animate camera to myLocation
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                    new LatLng(myLocation.getLatitude(), myLocation.getLongitude()), 15));
+//        if (myLocation != null) {
+////          Animate camera to myLocation
+//            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+//                    new LatLng(myLocation.getLatitude(), myLocation.getLongitude()), 15));
+//
+//            CameraPosition cameraPosition = new CameraPosition.Builder()
+//                    .target(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()))
+//                    .zoom(15)
+//                    .bearing(90)
+//                    .tilt(40)
+//                    .build();
+//
+//            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+//        }
+    }
 
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()))
-                    .zoom(15)
-                    .bearing(90)
-                    .tilt(40)
-                    .build();
-
-            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        }
+    public void closeKeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow((null == getCurrentFocus()) ? null : getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     public void onItemSelected(String place, AutoCompleteTextView view) {
+        closeKeyboard();
+        view.clearListSelection();
+        view.dismissDropDown();
 
+        Log.d("Place", place);
+        view.clearFocus();
+        Geocoder geocoder = new Geocoder(this);
+        List<Address> addressList = null;
+        try {
+            addressList = geocoder.getFromLocationName(place, 1);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        if (addressList != null) {
+            Address address = addressList.get(0);
+            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+
+            if (view.getId() == R.id.pickUpEdit) {
+                if (sourceMarker != null) {
+                    sourceMarker.remove();
+                }
+                sourceMarker = googleMap.addMarker(new MarkerOptions().title("Pickup -" + place).position(latLng));
+            } else {
+                if (destinationMarker != null) {
+                    destinationMarker.remove();
+                }
+                destinationMarker = googleMap.addMarker(new MarkerOptions().title("Destination - " + place).position(latLng));
+                destinationLatLng = latLng;
+            }
+        }
     }
 
     //TODO Refactor in order to use recommended google places api guidelines
@@ -233,5 +281,31 @@ public class MainActivity extends ActionBarActivity {
                 }, responseErrorListener);
 
         requestQueue.add(stringRequest);
+    }
+
+
+    @Override
+    public void onLocationChanged(Location location) {
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+        LatLng latLng = new LatLng(latitude, longitude);
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }
