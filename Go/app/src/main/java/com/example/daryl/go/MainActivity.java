@@ -189,18 +189,27 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
     public void onItemSelected(String place, AutoCompleteTextView view) {
         closeKeyboard();
+
+        view.setFocusable(false);
+        view.setFocusableInTouchMode(false);
+
         view.clearListSelection();
         view.dismissDropDown();
+
+        view.setFocusable(true);
+        view.setFocusableInTouchMode(true);
 
         Log.d("Place", place);
         view.clearFocus();
         Geocoder geocoder = new Geocoder(this);
         List<Address> addressList = null;
+
         try {
             addressList = geocoder.getFromLocationName(place, 1);
         } catch (Exception e){
             e.printStackTrace();
         }
+
         if (addressList != null) {
             Address address = addressList.get(0);
             LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());

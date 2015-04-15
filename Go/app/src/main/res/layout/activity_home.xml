@@ -6,7 +6,7 @@
 
     <fragment
         android:layout_width="match_parent"
-        android:layout_height="310dp"
+        android:layout_height="240dp"
         android:layout_marginTop="90dp"
         android:id="@+id/map"
         tools:context=".Home"
@@ -16,12 +16,14 @@
         android:id="@+id/pickUpEdit"
         style="@style/PlaceView"
         android:hint="Source"
+        android:textSize="20sp"
         android:gravity="top"/>
 
     <AutoCompleteTextView
         android:id="@+id/dropEdit"
         style="@style/PlaceView"
         android:hint="Destination"
+        android:textSize="20sp"
         android:layout_marginTop="40dp"/>
 
     <LinearLayout
@@ -32,44 +34,161 @@
         android:paddingRight="40dp"
         android:layout_gravity="bottom">
 
-        <Button
-            android:id="@+id/now"
-            style="@style/TimeButton"
-            android:text="NOW"/>
-
-        <View
-            android:layout_width="5dp"
-            android:layout_height="1dp"></View>
-
-        <Button
-            android:id="@+id/later"
-            style="@style/TimeButton"
-            android:text="LATER"/>
-
     </LinearLayout>
 
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="55dp"-->
+        <!--android:paddingLeft="40dp"-->
+        <!--android:paddingRight="40dp"-->
+        <!--android:layout_gravity="bottom">-->
 
-    <LinearLayout
+        <!--<Button-->
+            <!--android:id="@+id/now"-->
+            <!--style="@style/TimeButton"-->
+            <!--android:text="NOW"/>-->
+
+        <!--<View-->
+            <!--android:layout_width="5dp"-->
+            <!--android:layout_height="1dp"></View>-->
+
+        <!--<Button-->
+            <!--android:id="@+id/later"-->
+            <!--style="@style/TimeButton"-->
+            <!--android:text="LATER"/>-->
+
+    <!--</LinearLayout>-->
+
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_gravity="bottom"-->
+        <!--android:layout_marginLeft="15dp"-->
+        <!--android:id="@+id/carTypeLayout">-->
+        <!--<TextView-->
+            <!--android:id="@+id/hatchbackView"-->
+            <!--style="@style/CarStyle"-->
+            <!--android:text="Hatchback"/>-->
+        <!--<TextView-->
+            <!--android:id="@+id/sedanView"-->
+            <!--style="@style/CarStyle"-->
+            <!--android:text="Sedan"/>-->
+        <!--<TextView-->
+            <!--android:id="@+id/suvView"-->
+            <!--style="@style/CarStyle"-->
+            <!--android:text="SUV"/>-->
+
+    <!--</LinearLayout>-->
+
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="bottom"
-        android:layout_marginLeft="15dp"
-        android:id="@+id/carTypeLayout">
-        <TextView
-            android:id="@+id/hatchbackView"
-            style="@style/CarStyle"
-            android:text="Hatchback"/>
-        <TextView
-            android:id="@+id/sedanView"
-            style="@style/CarStyle"
-            android:text="Sedan"/>
-        <TextView
-            android:id="@+id/suvView"
-            style="@style/CarStyle"
-            android:text="SUV"/>
+        android:layout_marginBottom="10dp"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:layout_gravity="right|bottom">
 
-    </LinearLayout>
+        <TableRow
+            android:id="@+id/submitRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/submitButton"
+                style="@style/TimeButton"
+                android:text="SUBMIT"/>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/uberRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/uberLogo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/uberlogo"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="@string/price_label"
+                android:textSize="20sp"
+                android:paddingTop="10sp"
+                android:paddingRight="2sp"
+                android:paddingLeft="25sp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:textSize="20sp"
+                android:paddingTop="10sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="@string/time_label"
+                android:textSize="20sp"
+                android:paddingTop="10sp"
+                android:paddingRight="5sp"
+                android:paddingLeft="25sp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:textSize="20sp"
+                android:paddingTop="10sp"/>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/lyftRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/lyftLogo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/lyftlogo"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="@string/price_label"
+                android:textSize="20sp"
+                android:paddingTop="10sp"
+                android:paddingRight="2sp"
+                android:paddingLeft="25sp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:textSize="20sp"
+                android:paddingTop="10sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="@string/time_label"
+                android:textSize="20sp"
+                android:paddingTop="10sp"
+                android:paddingRight="5sp"
+                android:paddingLeft="25sp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:textSize="20sp"
+                android:paddingTop="10sp"/>
+        </TableRow>
+
+    </TableLayout>
 
 
 </FrameLayout>
