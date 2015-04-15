@@ -31,6 +31,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.daryl.go.helpers.Secrets;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -159,33 +160,25 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     }
 
     private void zoomMapCurrentLocation() {
-//      Get location from GPS if it's available
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Location myLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (googleMap == null) {
+            googleMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                    .getMap();
 
-//        If Location wasn't found, find the next most accurate place
-        if (myLocation == null){
-            Criteria criteria = new Criteria();
-            criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-
-            String provider = locationManager.getBestProvider(criteria, true);
-            myLocation = locationManager.getLastKnownLocation(provider);
+//        Check to see that map was obtained successfully
+            if (googleMap != null) {
+                googleMap.setMyLocationEnabled(true);
+                googleMap.setTrafficEnabled(true);
+                googleMap.setBuildingsEnabled(true);
+                LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+                Criteria criteria = new Criteria();
+                String provider = locationManager.getBestProvider(criteria, true);
+                Location location = locationManager.getLastKnownLocation(provider);
+                if (location != null) {
+                    onLocationChanged(location);
+                }
+                locationManager.requestLocationUpdates(provider, 120000, 0, this);
+            }
         }
-
-//        if (myLocation != null) {
-////          Animate camera to myLocation
-//            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-//                    new LatLng(myLocation.getLatitude(), myLocation.getLongitude()), 15));
-//
-//            CameraPosition cameraPosition = new CameraPosition.Builder()
-//                    .target(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()))
-//                    .zoom(15)
-//                    .bearing(90)
-//                    .tilt(40)
-//                    .build();
-//
-//            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-//        }
     }
 
     public void closeKeyboard() {
