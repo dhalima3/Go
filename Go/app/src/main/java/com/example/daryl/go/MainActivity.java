@@ -86,6 +86,13 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         mSourceAutoComplete.setThreshold(3);
         mDestinationAutoComplete.setThreshold(3);
 
+        zoomMapCurrentLocation();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
         mSourceAutoComplete.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -133,8 +140,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                 }, 1000);
             }
         });
-
-        zoomMapCurrentLocation();
     }
 
 
@@ -189,27 +194,18 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
     public void onItemSelected(String place, AutoCompleteTextView view) {
         closeKeyboard();
-
-        view.setFocusable(false);
-        view.setFocusableInTouchMode(false);
-
         view.clearListSelection();
         view.dismissDropDown();
-
-        view.setFocusable(true);
-        view.setFocusableInTouchMode(true);
 
         Log.d("Place", place);
         view.clearFocus();
         Geocoder geocoder = new Geocoder(this);
         List<Address> addressList = null;
-
         try {
             addressList = geocoder.getFromLocationName(place, 1);
         } catch (Exception e){
             e.printStackTrace();
         }
-
         if (addressList != null) {
             Address address = addressList.get(0);
             LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
