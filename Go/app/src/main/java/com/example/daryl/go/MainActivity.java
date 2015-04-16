@@ -37,12 +37,16 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.victorsima.uber.UberClient;
+import com.victorsima.uber.model.Products;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit.RestAdapter;
 
 public class MainActivity extends ActionBarActivity implements LocationListener {
 
@@ -76,6 +80,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
             Log.d("Latitude", Double.toString(destinationLatLng.latitude));
             Log.d("Longitude", Double.toString(destinationLatLng.longitude));
         }
+
     }
 
     @Override
@@ -230,6 +235,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                 destinationLatLng = latLng;
                 Log.d("Latitude", Double.toString(destinationLatLng.latitude));
                 Log.d("Longitude", Double.toString(destinationLatLng.longitude));
+//                TODO Change when getUberTime is activated
+                getUberPrice(latLng);
             }
         }
     }
@@ -287,6 +294,14 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                 }, responseErrorListener);
 
         requestQueue.add(stringRequest);
+    }
+
+    public void getUberPrice(LatLng latLng) {
+        double destinationLatitude = latLng.latitude;
+        double destinationLongitude = latLng.longitude;
+
+        UberClient uberClient = new UberClient("ipdXLSoVVnIyIkQIFKFp2BwrFttPdmkVKNVHzJFf", RestAdapter.LogLevel.BASIC);
+        Products products = uberClient.getApiService().getPriceEstimates();
     }
 
 
