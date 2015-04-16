@@ -15,14 +15,14 @@
     <AutoCompleteTextView
         android:id="@+id/pickUpEdit"
         style="@style/PlaceView"
-        android:hint="Source"
+        android:hint="Enter pickup location"
         android:textSize="20sp"
         android:gravity="top"/>
 
     <AutoCompleteTextView
         android:id="@+id/dropEdit"
         style="@style/PlaceView"
-        android:hint="Destination"
+        android:hint="Enter drop-off location"
         android:textSize="20sp"
         android:layout_marginTop="40dp"/>
 

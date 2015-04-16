@@ -67,6 +67,21 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         handler = new Handler();
         requestQueue = Volley.newRequestQueue(this);
 
+        mSourceAutoComplete.setThreshold(3);
+        mDestinationAutoComplete.setThreshold(3);
+
+        zoomMapCurrentLocation();
+
+        if (destinationLatLng != null){
+            Log.d("Latitude", Double.toString(destinationLatLng.latitude));
+            Log.d("Longitude", Double.toString(destinationLatLng.longitude));
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
         mSourceAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -82,16 +97,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                 onItemSelected(place, mDestinationAutoComplete);
             }
         });
-
-        mSourceAutoComplete.setThreshold(3);
-        mDestinationAutoComplete.setThreshold(3);
-
-        zoomMapCurrentLocation();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
 
         mSourceAutoComplete.addTextChangedListener(new TextWatcher() {
             @Override
@@ -206,7 +211,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         } catch (Exception e){
             e.printStackTrace();
         }
-        if (addressList != null) {
+        if (addressList.size() > 0) {
             Address address = addressList.get(0);
             LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -223,6 +228,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                 }
                 destinationMarker = googleMap.addMarker(new MarkerOptions().title("Destination - " + place).position(latLng));
                 destinationLatLng = latLng;
+                Log.d("Latitude", Double.toString(destinationLatLng.latitude));
+                Log.d("Longitude", Double.toString(destinationLatLng.longitude));
             }
         }
     }

@@ -9,25 +9,18 @@
         <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-861f119af853b1a78fa9276f4eabef96a6d6f6cc.jar" />
     </item>
     <item
-        jar="/Users/Daryl/Github/Go/Go/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-maps/7.0.0/classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="17f8750d5c0749e44dd7c54aa390d9c937803825">
-        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-70d9cfa44c8b1195efb2ee9be39eb74bb389e0ef.jar" />
-    </item>
-    <item
-        jar="/Users/Daryl/Github/Go/Go/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-drive/7.0.0/classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="41b3870cbe5fa546d8095b5b89d42cb69f3dd175">
-        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-3a7ffd2e69c6f99df46a4900370345d222c45c43.jar" />
-    </item>
-    <item
         jar="/Users/Daryl/Github/Go/Go/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-appindexing/7.0.0/classes.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="a08d65794b844d8e7540bf9a33859bf3b2482d7f">
         <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-a7998121581e1bbaa80540366942126082ea20ff.jar" />
+    </item>
+    <item
+        jar="/Users/Daryl/.gradle/caches/modules-2/files-2.1/com.victorsima/uber-java-client/0.0.2/ea87958a63113a38038cc6a9ca5b8b4b5ab1b2a8/uber-java-client-0.0.2.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="ea87958a63113a38038cc6a9ca5b8b4b5ab1b2a8">
+        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/uber-java-client-0.0.2-2915cab4072e257caab04778e37d01c2f6a4a189.jar" />
     </item>
     <item
         jar="/Users/Daryl/Github/Go/Go/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-location/7.0.0/classes.jar"
@@ -37,11 +30,11 @@
         <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-919de75b93dfd3f4f11c32bb8617907944b3de0a.jar" />
     </item>
     <item
-        jar="/Users/Daryl/Github/Go/Go/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-panorama/7.0.0/classes.jar"
+        jar="/Users/Daryl/Github/Go/Go/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/7.0.0/classes.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="1c5a76debf0c2857ccad422c4a80ed785982f8df">
-        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-31f7f5f1f123ee39dea54ffd019fcb5a88068eae.jar" />
+        sha1="4c93d99d454c975536bbe3b42283eee847f03ea3">
+        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-3e40f56d6757a7b51b268b59a62c6bd7aa1f9f7e.jar" />
     </item>
     <item
         jar="/Users/Daryl/Github/Go/Go/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-nearby/7.0.0/classes.jar"
@@ -51,20 +44,6 @@
         <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-e1a60aa0da1bba1ea77a9f426055085a19607caf.jar" />
     </item>
     <item
-        jar="/Users/Daryl/Github/Go/Go/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/7.0.0/classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="4c93d99d454c975536bbe3b42283eee847f03ea3">
-        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-3e40f56d6757a7b51b268b59a62c6bd7aa1f9f7e.jar" />
-    </item>
-    <item
-        jar="/Users/Daryl/Github/Go/Go/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-wearable/7.0.0/classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="3033cc3a2c68dff3e5b646d6d084bdbdf7d00b25">
-        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-c94caf99e9a60232d460e53691f46199700956ac.jar" />
-    </item>
-    <item
         jar="/Users/Daryl/Github/Go/Go/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-cast/7.0.0/classes.jar"
         jumboMode="false"
         revision="21.1.2"
@@ -72,11 +51,18 @@
         <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-ab7f6fa208df0264d09cb5bed452400813384af6.jar" />
     </item>
     <item
-        jar="/Users/Daryl/Github/Go/Go/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-safetynet/7.0.0/classes.jar"
+        jar="/Users/Daryl/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp-urlconnection/2.0.0/afe8399d352713b66e597e9670c741d1e60ae923/okhttp-urlconnection-2.0.0.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="c976518693e89ad44fbfccfc654941eaec198d08">
-        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-711627a56c838b997ec833d354a44f55af03710e.jar" />
+        sha1="afe8399d352713b66e597e9670c741d1e60ae923">
+        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/okhttp-urlconnection-2.0.0-6aff57ff08ca9f543ece3ea2696a70e7fbe822b7.jar" />
+    </item>
+    <item
+        jar="/Users/Daryl/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.0.0/2534c458682c73f5b9871131ab3098d3f987ca3/okio-1.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="02534c458682c73f5b9871131ab3098d3f987ca3">
+        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/okio-1.0.0-c0b87219caa7eedb9c5a205d8bba6a6d78f8dde9.jar" />
     </item>
     <item
         jar="/Users/Daryl/Github/Go/Go/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.0.0/classes.jar"
@@ -112,13 +98,6 @@
         revision="21.1.2"
         sha1="3c0b099f9de16b265ecd6122fcb603e7d0d29f90">
         <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-454222adf768248ae26b03fd86a130a3ae0f32c3.jar" />
-    </item>
-    <item
-        jar="/Users/Daryl/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/22.0.0/support-annotations-22.0.0.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="685d0b2c590447e85284ed84712cb363ba04eff8">
-        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/support-annotations-22.0.0-a3c4b7a2484d1d61152dd463ff90e5c8348570d8.jar" />
     </item>
     <item
         jar="/Users/Daryl/.gradle/caches/modules-2/files-2.1/com.mcxiaoke.volley/library/1.0.15/9093a362d18c5f81f58e49d86dece57d9b6e1cb7/library-1.0.15.jar"
@@ -161,6 +140,76 @@
         revision="21.1.2"
         sha1="29fd6d3794b71491c2789708cd8d03c71feb8954">
         <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-f0769f968276610440b9406dab9259fba51eb3ab.jar" />
+    </item>
+    <item
+        jar="/Users/Daryl/Github/Go/Go/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-maps/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="17f8750d5c0749e44dd7c54aa390d9c937803825">
+        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-70d9cfa44c8b1195efb2ee9be39eb74bb389e0ef.jar" />
+    </item>
+    <item
+        jar="/Users/Daryl/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.3.1/ecb6e1f8e4b0e84c4b886c2f14a1500caf309757/gson-2.3.1.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="ecb6e1f8e4b0e84c4b886c2f14a1500caf309757">
+        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/gson-2.3.1-a6351eb5e1d497cb21dba27bb9380a2ab6b664b7.jar" />
+    </item>
+    <item
+        jar="/Users/Daryl/Github/Go/Go/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-drive/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="41b3870cbe5fa546d8095b5b89d42cb69f3dd175">
+        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-3a7ffd2e69c6f99df46a4900370345d222c45c43.jar" />
+    </item>
+    <item
+        jar="/Users/Daryl/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.4/b1b6ea3b7e4aa4f492509a4952029cd8e48019ad/commons-io-2.4.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="b1b6ea3b7e4aa4f492509a4952029cd8e48019ad">
+        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/commons-io-2.4-b0aa05f3b06d2919c7f4462aa74fcbc3263cdcb5.jar" />
+    </item>
+    <item
+        jar="/Users/Daryl/Github/Go/Go/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-panorama/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="1c5a76debf0c2857ccad422c4a80ed785982f8df">
+        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-31f7f5f1f123ee39dea54ffd019fcb5a88068eae.jar" />
+    </item>
+    <item
+        jar="/Users/Daryl/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit/retrofit/1.9.0/a681c044244d9fc375198588297a39ba78028423/retrofit-1.9.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="a681c044244d9fc375198588297a39ba78028423">
+        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/retrofit-1.9.0-235959e2f4c1004190a7dee99d761a5ebd91cc07.jar" />
+    </item>
+    <item
+        jar="/Users/Daryl/Github/Go/Go/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-wearable/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="3033cc3a2c68dff3e5b646d6d084bdbdf7d00b25">
+        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-c94caf99e9a60232d460e53691f46199700956ac.jar" />
+    </item>
+    <item
+        jar="/Users/Daryl/Github/Go/Go/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-safetynet/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="c976518693e89ad44fbfccfc654941eaec198d08">
+        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/classes-711627a56c838b997ec833d354a44f55af03710e.jar" />
+    </item>
+    <item
+        jar="/Users/Daryl/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/22.0.0/support-annotations-22.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="685d0b2c590447e85284ed84712cb363ba04eff8">
+        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/support-annotations-22.0.0-a3c4b7a2484d1d61152dd463ff90e5c8348570d8.jar" />
+    </item>
+    <item
+        jar="/Users/Daryl/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp/2.0.0/4c8d1536dba3812cc1592090dc20c47a4ed3c35e/okhttp-2.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4c8d1536dba3812cc1592090dc20c47a4ed3c35e">
+        <dex dex="/Users/Daryl/Github/Go/Go/app/build/intermediates/pre-dexed/debug/okhttp-2.0.0-09544854a52d6e643e77052ff15e86b70c35c3ed.jar" />
     </item>
     <item
         jar="/Users/Daryl/Github/Go/Go/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-ads/7.0.0/classes.jar"

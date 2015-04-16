@@ -24,4 +24,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.google.android.gms:play-services:7.0.0'
     compile 'com.mcxiaoke.volley:library:1.0.+'
+    compile 'com.victorsima:uber-java-client:0.0.2'
 }
