@@ -315,30 +315,54 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         requestQueue.add(stringRequest);
     }
 
-    public void getUberData() {
+    public void getData() {
         double sourceLatitude = sourceLatLng.latitude;
         double sourceLongitude = sourceLatLng.longitude;
         double destinationLatitude = destinationLatLng.latitude;
         double destinationLongitude = destinationLatLng.longitude;
         UberClient uberClient = new UberClient(Secrets.UBER_SERVER_TOKEN, RestAdapter.LogLevel.BASIC);
 
-        List<Price> priceList = getUberPrice(uberClient, sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
-        List<Time> timeList = getUberTime(uberClient, sourceLatitude, sourceLongitude);
+        List<Price> uberPriceList = getUberPriceList(uberClient, sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
+        List<Time> uberTimeList = getUberTimeList(uberClient, sourceLatitude, sourceLongitude);
+        double lyftPrice = getLyftPrice(sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
     }
 
-    public List<Price> getUberPrice(UberClient uberClient, double sourceLatitude, double sourceLongitude, double destinationLatitude, double destinationLongitude) {
+    public List<Price> getUberPriceList(UberClient uberClient, double sourceLatitude, double sourceLongitude, double destinationLatitude, double destinationLongitude) {
 
         Prices prices = uberClient.getApiService().getPriceEstimates(sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
         List<Price> priceList = prices.getPrices();
         return priceList;
     }
 
-    public List<Time> getUberTime(UberClient uberClient, double sourceLatitude, double sourceLongitude) {
+    public List<Time> getUberTimeList(UberClient uberClient, double sourceLatitude, double sourceLongitude) {
 
         Times times = uberClient.getApiService().getTimeEstimates(sourceLatitude, sourceLongitude, null, null);
         List<Time> timeList = times.getTimes();
         return timeList;
     }
+
+//    TODO This is a backup for the API call.  Need to implement for Lyft Plus
+    public double getLyftPrice(double sourceLatitude, double sourceLongitude, double destinationLatitude, double destinationLongitude){
+        double baseCharge = 1.35;
+        double buffer = .75;
+        double costPerMile = 1.29;
+        double costPerMinute = .17;
+        double trustSafetyFee = 1.50;
+        double finalPrice = 0;
+
+//        finalPrice =
+
+        if (finalPrice < 6.00) {
+            finalPrice = 6.00;
+        }
+
+        return finalPrice;
+    }
+
+//    TODO Implement for java
+    public double getLyftTime(double sourceLatitude, double sourceLongitude) { return 0; }
+
+
 
     @Override
     public void onLocationChanged(Location location) {
