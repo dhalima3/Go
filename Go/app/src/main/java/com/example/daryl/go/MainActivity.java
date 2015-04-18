@@ -38,6 +38,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.victorsima.uber.UberClient;
+import com.victorsima.uber.model.Price;
+import com.victorsima.uber.model.Prices;
+import com.victorsima.uber.model.Products;
+import com.victorsima.uber.model.Time;
+import com.victorsima.uber.model.Times;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -87,7 +92,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
         zoomMapCurrentLocation();
 
-        if (destinationLatLng != null){
+        if (destinationLatLng != null) {
             Log.d("Latitude", Double.toString(destinationLatLng.latitude));
             Log.d("Longitude", Double.toString(destinationLatLng.longitude));
         }
@@ -224,7 +229,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         List<Address> addressList = null;
         try {
             addressList = geocoder.getFromLocationName(place, 1);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         if (addressList.size() > 0) {
@@ -256,7 +261,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     }
 
     //TODO Refactor in order to use recommended google places api guidelines
-    private void searchPlaces(Editable s, final AutoCompleteTextView view){
+    private void searchPlaces(Editable s, final AutoCompleteTextView view) {
         String inputQuery = s.toString();
         if (inputQuery.isEmpty()) {
             return;
@@ -301,7 +306,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                             view.setAdapter(adapter);
                             view.showDropDown();
                             Log.d(getClass().getSimpleName(), mAddresses.toString());
-                        } catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -310,14 +315,30 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         requestQueue.add(stringRequest);
     }
 
-    public void getUberPrice(LatLng latLng) {
-        double destinationLatitude = latLng.latitude;
-        double destinationLongitude = latLng.longitude;
-
+    public void getUberData() {
+        double sourceLatitude = sourceLatLng.latitude;
+        double sourceLongitude = sourceLatLng.longitude;
+        double destinationLatitude = destinationLatLng.latitude;
+        double destinationLongitude = destinationLatLng.longitude;
         UberClient uberClient = new UberClient("ipdXLSoVVnIyIkQIFKFp2BwrFttPdmkVKNVHzJFf", RestAdapter.LogLevel.BASIC);
-//        Products products = uberClient.getApiService().getPriceEstimates();
+
+        List<Price> priceList = getUberPrice(uberClient, sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
+        List<Time> timeList = getUberTime(uberClient, sourceLatitude, sourceLongitude);
     }
 
+    public List<Price> getUberPrice(UberClient uberClient, double sourceLatitude, double sourceLongitude, double destinationLatitude, double destinationLongitude) {
+
+        Prices prices = uberClient.getApiService().getPriceEstimates(sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
+        List<Price> priceList = prices.getPrices();
+        return priceList;
+    }
+
+    public List<Time> getUberTime(UberClient uberClient, double sourceLatitude, double sourceLongitude) {
+
+        Times times = uberClient.getApiService().getTimeEstimates(sourceLatitude, sourceLongitude, null, null);
+        List<Time> timeList = times.getTimes();
+        return timeList;
+    }
 
     @Override
     public void onLocationChanged(Location location) {
