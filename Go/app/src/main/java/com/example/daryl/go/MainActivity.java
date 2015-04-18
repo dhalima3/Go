@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -49,8 +50,9 @@ import retrofit.RestAdapter;
 public class MainActivity extends ActionBarActivity implements LocationListener {
 
     private GoogleMap googleMap;
-    private AutoCompleteTextView sourceAutoComplete;
-    private AutoCompleteTextView destinationAutoComplete;
+    private AutoCompleteTextView sourceAutoComplete, destinationAutoComplete;
+    private TextView uberPriceLabel, uberTimeLabel, lyftPriceLabel, lyftTimeLabel;
+    private EditText uberPriceValue, uberTimeValue, lyftPriceValue, lyftTimeValue;
     private Handler handler;
     private ArrayList<String> mAddresses = new ArrayList<String>();
     private RequestQueue requestQueue;
@@ -66,7 +68,15 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         sourceAutoComplete = (AutoCompleteTextView) findViewById(R.id.pickUpEdit);
         destinationAutoComplete = (AutoCompleteTextView) findViewById(R.id.dropEdit);
 
+        uberPriceLabel = (TextView) findViewById(R.id.uberPriceLabel);
+        uberTimeLabel = (TextView) findViewById(R.id.uberTimeLabel);
+        lyftPriceLabel = (TextView) findViewById(R.id.lyftPriceLabel);
+        lyftTimeLabel = (TextView) findViewById(R.id.lyftTimeLabel);
 
+        uberPriceValue = (EditText) findViewById(R.id.uberPriceValue);
+        uberTimeValue = (EditText) findViewById(R.id.uberTimeValue);
+        lyftPriceValue = (EditText) findViewById(R.id.lyftPriceValue);
+        lyftTimeValue = (EditText) findViewById(R.id.lyftTimeValue);
 
         handler = new Handler();
         requestQueue = Volley.newRequestQueue(this);
