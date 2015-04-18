@@ -320,7 +320,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         double sourceLongitude = sourceLatLng.longitude;
         double destinationLatitude = destinationLatLng.latitude;
         double destinationLongitude = destinationLatLng.longitude;
-        UberClient uberClient = new UberClient("ipdXLSoVVnIyIkQIFKFp2BwrFttPdmkVKNVHzJFf", RestAdapter.LogLevel.BASIC);
+        UberClient uberClient = new UberClient(Secrets.UBER_SERVER_TOKEN, RestAdapter.LogLevel.BASIC);
 
         List<Price> priceList = getUberPrice(uberClient, sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
         List<Time> timeList = getUberTime(uberClient, sourceLatitude, sourceLongitude);
