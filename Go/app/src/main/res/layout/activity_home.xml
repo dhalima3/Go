@@ -115,6 +115,7 @@
                 android:src="@drawable/uberlogo"/>
 
             <TextView
+                android:id="@+id/uberPriceLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:text="@string/price_label"
@@ -124,12 +125,14 @@
                 android:paddingLeft="25sp"/>
 
             <EditText
+                android:id="@+id/uberPriceValue"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:textSize="20sp"
                 android:paddingTop="10sp"/>
 
             <TextView
+                android:id="@+id/uberTimeLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:text="@string/time_label"
@@ -139,6 +142,7 @@
                 android:paddingLeft="25sp"/>
 
             <EditText
+                android:id="@+id/uberTimeValue"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:textSize="20sp"
@@ -158,6 +162,7 @@
                 android:src="@drawable/lyftlogo"/>
 
             <TextView
+                android:id="@+id/lyftPriceLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:text="@string/price_label"
@@ -167,12 +172,14 @@
                 android:paddingLeft="25sp"/>
 
             <EditText
+                android:id="@+id/lyftPriceValue"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:textSize="20sp"
                 android:paddingTop="10sp"/>
 
             <TextView
+                android:id="@+id/lyftTimeLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:text="@string/time_label"
@@ -182,6 +189,7 @@
                 android:paddingLeft="25sp"/>
 
             <EditText
+                android:id="@+id/lyftTimeValue"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:textSize="20sp"

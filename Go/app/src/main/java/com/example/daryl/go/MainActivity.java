@@ -53,6 +53,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     private GoogleMap googleMap;
     private AutoCompleteTextView mSourceAutoComplete;
     private AutoCompleteTextView mDestinationAutoComplete;
+
     private Handler handler;
     private ArrayList<String> mAddresses = new ArrayList<String>();
     private RequestQueue requestQueue;
@@ -67,6 +68,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
         mSourceAutoComplete = (AutoCompleteTextView) findViewById(R.id.pickUpEdit);
         mDestinationAutoComplete = (AutoCompleteTextView) findViewById(R.id.dropEdit);
+
+
 
         handler = new Handler();
         requestQueue = Volley.newRequestQueue(this);
@@ -236,7 +239,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                 Log.d("Latitude", Double.toString(destinationLatLng.latitude));
                 Log.d("Longitude", Double.toString(destinationLatLng.longitude));
 //                TODO Change when getUberTime is activated
-                getUberPrice(latLng);
+//                getUberPrice(latLng);
             }
         }
     }
@@ -301,7 +304,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         double destinationLongitude = latLng.longitude;
 
         UberClient uberClient = new UberClient("ipdXLSoVVnIyIkQIFKFp2BwrFttPdmkVKNVHzJFf", RestAdapter.LogLevel.BASIC);
-        Products products = uberClient.getApiService().getPriceEstimates();
+//        Products products = uberClient.getApiService().getPriceEstimates();
     }
 
 
