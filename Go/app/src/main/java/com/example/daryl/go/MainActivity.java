@@ -58,6 +58,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     private RequestQueue requestQueue;
     private Marker sourceMarker;
     private Marker destinationMarker;
+    private LatLng sourceLatLng = null;
     private LatLng destinationLatLng = null;
 
     @Override
@@ -237,14 +238,17 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                     sourceMarker.remove();
                 }
                 sourceMarker = googleMap.addMarker(new MarkerOptions().title("Pickup -" + place).position(latLng));
+                sourceLatLng = latLng;
+                uberPriceValue.setText(Double.toString(latLng.latitude));
+                uberTimeValue.setText(Double.toString(latLng.longitude));
             } else {
                 if (destinationMarker != null) {
                     destinationMarker.remove();
                 }
                 destinationMarker = googleMap.addMarker(new MarkerOptions().title("Destination - " + place).position(latLng));
                 destinationLatLng = latLng;
-                Log.d("Latitude", Double.toString(destinationLatLng.latitude));
-                Log.d("Longitude", Double.toString(destinationLatLng.longitude));
+                lyftPriceValue.setText(Double.toString(latLng.latitude));
+                lyftTimeValue.setText(Double.toString(latLng.longitude));
 //                TODO Change when getUberTime is activated
 //                getUberPrice(latLng);
             }
