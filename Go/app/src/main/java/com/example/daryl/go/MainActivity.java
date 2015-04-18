@@ -33,12 +33,10 @@ import com.example.daryl.go.helpers.Secrets;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.victorsima.uber.UberClient;
-import com.victorsima.uber.model.Products;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -51,9 +49,8 @@ import retrofit.RestAdapter;
 public class MainActivity extends ActionBarActivity implements LocationListener {
 
     private GoogleMap googleMap;
-    private AutoCompleteTextView mSourceAutoComplete;
-    private AutoCompleteTextView mDestinationAutoComplete;
-
+    private AutoCompleteTextView sourceAutoComplete;
+    private AutoCompleteTextView destinationAutoComplete;
     private Handler handler;
     private ArrayList<String> mAddresses = new ArrayList<String>();
     private RequestQueue requestQueue;
@@ -66,16 +63,16 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mSourceAutoComplete = (AutoCompleteTextView) findViewById(R.id.pickUpEdit);
-        mDestinationAutoComplete = (AutoCompleteTextView) findViewById(R.id.dropEdit);
+        sourceAutoComplete = (AutoCompleteTextView) findViewById(R.id.pickUpEdit);
+        destinationAutoComplete = (AutoCompleteTextView) findViewById(R.id.dropEdit);
 
 
 
         handler = new Handler();
         requestQueue = Volley.newRequestQueue(this);
 
-        mSourceAutoComplete.setThreshold(3);
-        mDestinationAutoComplete.setThreshold(3);
+        sourceAutoComplete.setThreshold(3);
+        destinationAutoComplete.setThreshold(3);
 
         zoomMapCurrentLocation();
 
@@ -90,23 +87,23 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     public void onResume() {
         super.onResume();
 
-        mSourceAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        sourceAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String place = ((TextView) view).getText().toString();
-                onItemSelected(place, mSourceAutoComplete);
+                onItemSelected(place, sourceAutoComplete);
             }
         });
 
-        mDestinationAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        destinationAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String place = ((TextView) view).getText().toString();
-                onItemSelected(place, mDestinationAutoComplete);
+                onItemSelected(place, destinationAutoComplete);
             }
         });
 
-        mSourceAutoComplete.addTextChangedListener(new TextWatcher() {
+        sourceAutoComplete.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -124,13 +121,13 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        searchPlaces(s, mSourceAutoComplete);
+                        searchPlaces(s, sourceAutoComplete);
                     }
                 }, 1000);
             }
         });
 
-        mDestinationAutoComplete.addTextChangedListener(new TextWatcher() {
+        destinationAutoComplete.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -148,7 +145,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        searchPlaces(s, mDestinationAutoComplete);
+                        searchPlaces(s, destinationAutoComplete);
                     }
                 }, 1000);
             }
