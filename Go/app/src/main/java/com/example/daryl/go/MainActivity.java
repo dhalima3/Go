@@ -82,11 +82,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Set up the Google API Client if it has not been initialised yet.
-        if (mGoogleApiClient == null) {
-//            rebuildGoogleApiClient();
-        }
-
         setContentView(R.layout.activity_home);
 
         sourceAutoComplete = (AutoCompleteTextView) findViewById(R.id.pickUpEdit);
@@ -331,7 +326,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 //                            TODO: Multiple adapters?
                             ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, mAddresses);
                             view.setAdapter(adapter);
-                            view.showDropDown();
+//                            view.showDropDown();
                             Log.d(getClass().getSimpleName(), mAddresses.toString());
                         } catch (Exception e) {
                             e.printStackTrace();
