@@ -72,12 +72,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     private LatLng sourceLatLng = null;
     private LatLng destinationLatLng = null;
 
-    private final String PLACESTAG = "Places";
-    protected GoogleApiClient mGoogleApiClient;
-    private PlaceAutocompleteAdapter mAdapter;
-    private static final LatLngBounds BOUNDS_GREATER_SYDNEY = new LatLngBounds(
-            new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +92,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         lyftTimeValue = (EditText) findViewById(R.id.lyftTimeValue);
 
         submitButton = (Button) findViewById(R.id.submitButton);
-
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -189,7 +182,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
             }
         });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -412,59 +404,4 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     public void onProviderDisabled(String provider) {
 
     }
-
-
-//    /**
-//     * Construct a GoogleApiClient for the {@link Places#GEO_DATA_API} using AutoManage
-//     * functionality.
-//     * This automatically sets up the API client to handle Activity lifecycle events.
-//     */
-//    protected synchronized void rebuildGoogleApiClient() {
-//        // When we build the GoogleApiClient we specify where connected and connection failed
-//        // callbacks should be returned, which Google APIs our app uses and which OAuth 2.0
-//        // scopes our app requests.
-//        mGoogleApiClient = new GoogleApiClient.Builder(this)
-//                .enableAutoManage(this, 0 /* clientId */, this)
-//                .addConnectionCallbacks(this)
-//                .addApi(Places.GEO_DATA_API)
-//                .build();
-//    }
-//
-//    /**
-//     * Called when the Activity could not connect to Google Play services and the auto manager
-//     * could resolve the error automatically.
-//     * In this case the API is not available and notify the user.
-//     *
-//     * @param connectionResult can be inspected to determine the cause of the failure
-//     */
-//    @Override
-//    public void onConnectionFailed(ConnectionResult connectionResult) {
-//
-//        Log.e(PLACESTAG, "onConnectionFailed: ConnectionResult.getErrorCode() = "
-//                + connectionResult.getErrorCode());
-//
-//        // TODO(Developer): Check error code and notify the user of error state and resolution.
-//        Toast.makeText(this,
-//                "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
-//                Toast.LENGTH_SHORT).show();
-//
-//        // Disable API access in the adapter because the client was not initialised correctly.
-//        mAdapter.setGoogleApiClient(null);
-//
-//    }
-//
-//    @Override
-//    public void onConnected(Bundle bundle) {
-//        // Successfully connected to the API client. Pass it to the adapter to enable API access.
-//        mAdapter.setGoogleApiClient(mGoogleApiClient);
-//        Log.i(PLACESTAG, "GoogleApiClient connected.");
-//
-//    }
-//
-//    @Override
-//    public void onConnectionSuspended(int i) {
-//        // Connection to the API client has been suspended. Disable API access in the client.
-//        mAdapter.setGoogleApiClient(null);
-//        Log.e(PLACESTAG, "GoogleApiClient connection suspended.");
-//    }
 }
