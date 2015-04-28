@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -40,7 +41,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.victorsima.uber.UberClient;
 import com.victorsima.uber.model.Price;
 import com.victorsima.uber.model.Prices;
-import com.victorsima.uber.model.Products;
 import com.victorsima.uber.model.Time;
 import com.victorsima.uber.model.Times;
 
@@ -58,6 +58,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     private AutoCompleteTextView sourceAutoComplete, destinationAutoComplete;
     private TextView uberPriceLabel, uberTimeLabel, lyftPriceLabel, lyftTimeLabel;
     private EditText uberPriceValue, uberTimeValue, lyftPriceValue, lyftTimeValue;
+    private Button submitButton;
     private Handler handler;
     private ArrayList<String> mAddresses = new ArrayList<String>();
     private RequestQueue requestQueue;
@@ -83,6 +84,15 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         uberTimeValue = (EditText) findViewById(R.id.uberTimeValue);
         lyftPriceValue = (EditText) findViewById(R.id.lyftPriceValue);
         lyftTimeValue = (EditText) findViewById(R.id.lyftTimeValue);
+
+        submitButton = (Button) findViewById(R.id.submitButton);
+
+
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                getData();
+            }
+        });
 
         handler = new Handler();
         requestQueue = Volley.newRequestQueue(this);
@@ -321,8 +331,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         double destinationLatitude = destinationLatLng.latitude;
         double destinationLongitude = destinationLatLng.longitude;
         UberClient uberClient = new UberClient(Secrets.UBER_SERVER_TOKEN, RestAdapter.LogLevel.BASIC);
+        Prices prices = uberClient.getApiService().getPriceEstimates(sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
 
-        List<Price> uberPriceList = getUberPriceList(uberClient, sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
+//        List<Price> uberPriceList = getUberPriceList(uberClient, sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
+//        Log.d("Price List", uberPriceList.toString());
         List<Time> uberTimeList = getUberTimeList(uberClient, sourceLatitude, sourceLongitude);
         double lyftPrice = getLyftPrice(sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
     }
