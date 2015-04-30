@@ -31,26 +31,26 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.daryl.go.helpers.Constants;
 import com.example.daryl.go.helpers.Secrets;
+import com.example.daryl.go.helpers.api.UberApiClient;
+import com.example.daryl.go.helpers.api.UberCallback;
+import com.example.daryl.go.helpers.model.PriceEstimate;
+import com.example.daryl.go.helpers.model.PriceEstimateList;
+import com.example.daryl.go.helpers.model.TimeEstimate;
+import com.example.daryl.go.helpers.model.TimeEstimateList;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.victorsima.uber.UberClient;
-import com.victorsima.uber.model.Price;
-import com.victorsima.uber.model.Prices;
-import com.victorsima.uber.model.Time;
-import com.victorsima.uber.model.Times;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit.RestAdapter;
 
 public class MainActivity extends ActionBarActivity implements LocationListener {
 
@@ -90,7 +90,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                getData();
+//                getData();
             }
         });
 
@@ -99,6 +99,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
         sourceAutoComplete.setThreshold(3);
         destinationAutoComplete.setThreshold(3);
+
+
+        getPrices();
+        getTimes();
 
         zoomMapCurrentLocation();
 
@@ -324,33 +328,33 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         requestQueue.add(stringRequest);
     }
 
-    public void getData() {
-        double sourceLatitude = sourceLatLng.latitude;
-        double sourceLongitude = sourceLatLng.longitude;
-        double destinationLatitude = destinationLatLng.latitude;
-        double destinationLongitude = destinationLatLng.longitude;
-        UberClient uberClient = new UberClient(Secrets.UBER_SERVER_TOKEN, RestAdapter.LogLevel.BASIC);
-        Prices prices = uberClient.getApiService().getPriceEstimates(sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
-
-        List<Price> uberPriceList = getUberPriceList(uberClient, sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
-        Log.d("Price List", uberPriceList.toString());
-        List<Time> uberTimeList = getUberTimeList(uberClient, sourceLatitude, sourceLongitude);
-        double lyftPrice = getLyftPrice(sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
-    }
-
-    public List<Price> getUberPriceList(UberClient uberClient, double sourceLatitude, double sourceLongitude, double destinationLatitude, double destinationLongitude) {
-
-        Prices prices = uberClient.getApiService().getPriceEstimates(sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
-        List<Price> priceList = prices.getPrices();
-        return priceList;
-    }
-
-    public List<Time> getUberTimeList(UberClient uberClient, double sourceLatitude, double sourceLongitude) {
-
-        Times times = uberClient.getApiService().getTimeEstimates(sourceLatitude, sourceLongitude, null, null);
-        List<Time> timeList = times.getTimes();
-        return timeList;
-    }
+//    public void getData() {
+//        double sourceLatitude = sourceLatLng.latitude;
+//        double sourceLongitude = sourceLatLng.longitude;
+//        double destinationLatitude = destinationLatLng.latitude;
+//        double destinationLongitude = destinationLatLng.longitude;
+//        UberClient uberClient = new UberClient(Secrets.UBER_SERVER_TOKEN, RestAdapter.LogLevel.BASIC);
+//        Prices prices = uberClient.getApiService().getPriceEstimates(sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
+//
+//        List<Price> uberPriceList = getUberPriceList(uberClient, sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
+//        Log.d("Price List", uberPriceList.toString());
+//        List<Time> uberTimeList = getUberTimeList(uberClient, sourceLatitude, sourceLongitude);
+//        double lyftPrice = getLyftPrice(sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
+//    }
+//
+//    public List<Price> getUberPriceList(UberClient uberClient, double sourceLatitude, double sourceLongitude, double destinationLatitude, double destinationLongitude) {
+//
+//        Prices prices = uberClient.getApiService().getPriceEstimates(sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
+//        List<Price> priceList = prices.getPrices();
+//        return priceList;
+//    }
+//
+//    public List<Time> getUberTimeList(UberClient uberClient, double sourceLatitude, double sourceLongitude) {
+//
+//        Times times = uberClient.getApiService().getTimeEstimates(sourceLatitude, sourceLongitude, null, null);
+//        List<Time> timeList = times.getTimes();
+//        return timeList;
+//    }
 
 //    TODO This is a backup for the API call.  Need to implement for Lyft Plus
     public double getLyftPrice(double sourceLatitude, double sourceLongitude, double destinationLatitude, double destinationLongitude){
@@ -398,5 +402,35 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    public void getPrices() {
+        UberApiClient.getUberV1APIClient().getPriceEstimates(("Token " + Secrets.UBER_SERVER_TOKEN),
+                Constants.START_LATITUDE,
+                Constants.START_LONGITUDE,
+                Constants.END_LATITUDE,
+                Constants.END_LONGITUDE,
+                new UberCallback<PriceEstimateList>() {
+                    @Override
+                    public void success(PriceEstimateList priceEstimateList, retrofit.client.Response response) {
+                        PriceEstimate uberX = priceEstimateList.getPrices().get(0);
+                        String uberXPriceEstimate = uberX.getEstimate();
+                        uberPriceValue.setText(uberXPriceEstimate);
+                    }
+                });
+    }
+
+    public void getTimes() {
+        UberApiClient.getUberV1APIClient().getTimeEstimates(("Token " + Secrets.UBER_SERVER_TOKEN),
+                Constants.START_LATITUDE,
+                Constants.START_LONGITUDE,
+                new UberCallback<TimeEstimateList>() {
+                    @Override
+                    public void success(TimeEstimateList timeEstimateList, retrofit.client.Response response) {
+                        TimeEstimate uberX = timeEstimateList.getTimes().get(0);
+                        int uberXTimeEstimate = uberX.getEstimate();
+                        uberTimeValue.setText(String.valueOf(uberXTimeEstimate));
+                    }
+                });
     }
 }
