@@ -75,7 +75,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     private LatLng destinationLatLng = null;
 
     private TextView markerText;
-    private LinearLayout markerLayout;
     private TextView sourceTextView;
     private Geocoder geocoder;
     private List<Address> addressMarkerList;
@@ -90,7 +89,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         sourceTextView = (TextView) findViewById(R.id.pickUpEdit);
         destinationAutoComplete = (AutoCompleteTextView) findViewById(R.id.dropEdit);
         markerText = (TextView) findViewById(R.id.locationMarkertext);
-        markerLayout = (LinearLayout) findViewById(R.id.locationMarker);
 
         uberPriceLabel = (TextView) findViewById(R.id.uberPriceLabel);
         uberTimeLabel = (TextView) findViewById(R.id.uberTimeLabel);
@@ -416,33 +414,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                 center = googleMap.getCameraPosition().target;
                 markerText.setText(" Drag to your location ");
                 googleMap.clear();
-//                markerLayout.setVisibility(View.VISIBLE);
-
                 try {
                     new GetLocationAsync(center.latitude, center.longitude).execute();
-//                    addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
-//                sourceTextView.setText(addresses.get(0).getAddressLine(0) + " " + addresses.get(0).getAddressLine(1) + " ");
-            }
-        });
-
-        markerLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    LatLng latLng1 = new LatLng(center.latitude, center.longitude);
-
-                    Marker marker = googleMap.addMarker(new MarkerOptions()
-                            .position(latLng1)
-                            .title(" Drag to your Location ")
-                            .snippet(""));
-
-                    marker.setDraggable(true);
-                    markerLayout.setVisibility(View.GONE);
-                } catch (Exception e) {
-
                 }
             }
         });
