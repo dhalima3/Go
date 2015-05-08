@@ -41,6 +41,8 @@ import com.example.daryl.go.helpers.model.PriceEstimate;
 import com.example.daryl.go.helpers.model.PriceEstimateList;
 import com.example.daryl.go.helpers.model.TimeEstimate;
 import com.example.daryl.go.helpers.model.TimeEstimateList;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -59,7 +61,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends ActionBarActivity implements LocationListener {
+public class MainActivity extends ActionBarActivity implements LocationListener,
+        GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
     private GoogleMap googleMap;
     private AutoCompleteTextView destinationAutoComplete;
@@ -111,24 +114,17 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         handler = new Handler();
         requestQueue = Volley.newRequestQueue(this);
 
-        destinationAutoComplete.setThreshold(3);
-
-
-        getPrices();
-        getTimes();
+//        destinationAutoComplete.setThreshold(3);
 
         zoomMapCurrentLocation();
+
+//        getPrices();
+//        getTimes();
 
         if (destinationLatLng != null) {
             Log.d("Latitude", Double.toString(destinationLatLng.latitude));
             Log.d("Longitude", Double.toString(destinationLatLng.longitude));
         }
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
 
         destinationAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -137,30 +133,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                 onItemSelected(place, destinationAutoComplete);
             }
         });
-
-//        sourceAutoComplete.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(final Editable s) {
-//                handler.removeCallbacks(null);
-//                handler.removeCallbacksAndMessages(null);
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        searchPlaces(s, sourceAutoComplete);
-//                    }
-//                }, 1000);
-//            }
-//        });
 
         destinationAutoComplete.addTextChangedListener(new TextWatcher() {
             @Override
@@ -185,6 +157,68 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                 }, 1000);
             }
         });
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+//        destinationAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                String place = ((TextView) view).getText().toString();
+//                onItemSelected(place, destinationAutoComplete);
+//            }
+//        });
+//
+////        sourceAutoComplete.addTextChangedListener(new TextWatcher() {
+////            @Override
+////            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+////
+////            }
+////
+////            @Override
+////            public void onTextChanged(CharSequence s, int start, int before, int count) {
+////
+////            }
+////
+////            @Override
+////            public void afterTextChanged(final Editable s) {
+////                handler.removeCallbacks(null);
+////                handler.removeCallbacksAndMessages(null);
+////                handler.postDelayed(new Runnable() {
+////                    @Override
+////                    public void run() {
+////                        searchPlaces(s, sourceAutoComplete);
+////                    }
+////                }, 1000);
+////            }
+////        });
+//
+//        destinationAutoComplete.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(final Editable s) {
+//                handler.removeCallbacks(null);
+//                handler.removeCallbacksAndMessages(null);
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        searchPlaces(s, destinationAutoComplete);
+//                    }
+//                }, 1000);
+//            }
+//        });
     }
 
     @Override
@@ -431,8 +465,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
     public void getPrices() {
         UberApiClient.getUberV1APIClient().getPriceEstimates(("Token " + Secrets.UBER_SERVER_TOKEN),
-                Constants.START_LATITUDE,
-                Constants.START_LONGITUDE,
+                sourceLatLng.latitude,
+                sourceLatLng.longitude,
                 Constants.END_LATITUDE,
                 Constants.END_LONGITUDE,
                 new UberCallback<PriceEstimateList>() {
@@ -447,8 +481,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
 
     public void getTimes() {
         UberApiClient.getUberV1APIClient().getTimeEstimates(("Token " + Secrets.UBER_SERVER_TOKEN),
-                Constants.START_LATITUDE,
-                Constants.START_LONGITUDE,
+                sourceLatLng.latitude,
+                sourceLatLng.longitude,
                 new UberCallback<TimeEstimateList>() {
                     @Override
                     public void success(TimeEstimateList timeEstimateList, retrofit.client.Response response) {
@@ -458,6 +492,21 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                         uberTimeValue.setText(String.valueOf(uberXTimeInMinutes));
                     }
                 });
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 
     public class GetLocationAsync extends AsyncTask<String, Void, String> {
