@@ -140,6 +140,7 @@
                 android:id="@+id/uberLogo"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:paddingLeft="10dp"
                 android:src="@drawable/uberlogo"/>
 
             <TextView
@@ -187,6 +188,7 @@
                 android:id="@+id/lyftLogo"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:paddingLeft="10dp"
                 android:src="@drawable/lyftlogo"/>
 
             <TextView
