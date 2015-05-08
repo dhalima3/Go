@@ -62,7 +62,7 @@ import java.util.Locale;
 public class MainActivity extends ActionBarActivity implements LocationListener {
 
     private GoogleMap googleMap;
-    private AutoCompleteTextView sourceAutoComplete, destinationAutoComplete;
+    private AutoCompleteTextView destinationAutoComplete;
     private TextView uberPriceLabel, uberTimeLabel, lyftPriceLabel, lyftTimeLabel;
     private EditText uberPriceValue, uberTimeValue, lyftPriceValue, lyftTimeValue;
     private Button submitButton;
@@ -111,7 +111,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         handler = new Handler();
         requestQueue = Volley.newRequestQueue(this);
 
-//        sourceAutoComplete.setThreshold(3);
         destinationAutoComplete.setThreshold(3);
 
 
@@ -130,14 +129,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     @Override
     public void onResume() {
         super.onResume();
-
-//        sourceAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                String place = ((TextView) view).getText().toString();
-//                onItemSelected(place, sourceAutoComplete);
-//            }
-//        });
 
         destinationAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -493,6 +484,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         protected void onPostExecute(String result) {
             try {
                 sourceTextView.setText(addressMarkerList.get(0).getAddressLine(0) + " " + addressMarkerList.get(0).getAddressLine(1) + " ");
+                sourceLatLng = new LatLng(latitude, longitude);
             } catch (Exception e) {
                 e.printStackTrace();
             }
