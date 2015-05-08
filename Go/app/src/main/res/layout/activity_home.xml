@@ -50,9 +50,9 @@
         android:gravity="top"/>
 
     <AutoCompleteTextView
-        android:id="@+id/dropEdit"
+        android:id="@+id/dropEdit2"
         style="@style/PlaceView"
-        android:hint="Enter drop-off location"
+        android:hint="Enter dropoff location"
         android:textSize="20sp"
         android:layout_marginTop="40dp"/>
 

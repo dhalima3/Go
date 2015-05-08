@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,8 +23,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -34,6 +33,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.daryl.go.helpers.Constants;
+import com.example.daryl.go.helpers.PlaceAutocompleteAdapter;
 import com.example.daryl.go.helpers.Secrets;
 import com.example.daryl.go.helpers.api.UberApiClient;
 import com.example.daryl.go.helpers.api.UberCallback;
@@ -43,13 +43,17 @@ import com.example.daryl.go.helpers.model.TimeEstimate;
 import com.example.daryl.go.helpers.model.TimeEstimateList;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -83,6 +87,11 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private List<Address> addressMarkerList;
     private LatLng center;
 
+    protected GoogleApiClient googleApiClient;
+    private PlaceAutocompleteAdapter placeAutocompleteAdapter;
+    private AutoCompleteTextView destinationAutocomplete2;
+    private static final String PLACETAG = "PlaceAutocomplete";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +99,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         setContentView(R.layout.activity_home);
 
         sourceTextView = (TextView) findViewById(R.id.pickUpEdit);
-        destinationAutoComplete = (AutoCompleteTextView) findViewById(R.id.dropEdit);
+//        destinationAutoComplete = (AutoCompleteTextView) findViewById(R.id.dropEdit);
         markerText = (TextView) findViewById(R.id.locationMarkertext);
 
         uberPriceLabel = (TextView) findViewById(R.id.uberPriceLabel);
@@ -121,43 +130,49 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 //        getPrices();
 //        getTimes();
 
-        if (destinationLatLng != null) {
-            Log.d("Latitude", Double.toString(destinationLatLng.latitude));
-            Log.d("Longitude", Double.toString(destinationLatLng.longitude));
+//        destinationAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                String place = ((TextView) view).getText().toString();
+//                onItemSelected(place, destinationAutoComplete);
+//            }
+//        });
+//
+//        destinationAutoComplete.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(final Editable s) {
+//                handler.removeCallbacks(null);
+//                handler.removeCallbacksAndMessages(null);
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        searchPlaces(s, destinationAutoComplete);
+//                    }
+//                }, 1000);
+//            }
+//        });
+
+        if (googleApiClient == null) {
+            rebuildGoogleApiClient();
         }
 
-        destinationAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String place = ((TextView) view).getText().toString();
-                onItemSelected(place, destinationAutoComplete);
-            }
-        });
+        destinationAutocomplete2 = (AutoCompleteTextView) findViewById(R.id.dropEdit2);
+        destinationAutocomplete2.setOnItemClickListener(mAutocompleteClickListener);
+        LatLngBounds latLngBounds =  new LatLngBounds(
+                new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
 
-        destinationAutoComplete.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(final Editable s) {
-                handler.removeCallbacks(null);
-                handler.removeCallbacksAndMessages(null);
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        searchPlaces(s, destinationAutoComplete);
-                    }
-                }, 1000);
-            }
-        });
-
+        placeAutocompleteAdapter = new PlaceAutocompleteAdapter(this, android.R.layout.simple_list_item_1, latLngBounds, null);
+        destinationAutocomplete2.setAdapter(placeAutocompleteAdapter);
     }
 
     @Override
@@ -496,18 +511,119 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
     @Override
     public void onConnected(Bundle bundle) {
-
+        // Successfully connected to the API client. Pass it to the adapter to enable API access.
+        placeAutocompleteAdapter.setGoogleApiClient(googleApiClient);
+        Log.i(PLACETAG, "GoogleApiClient connected.");
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        // Connection to the API client has been suspended. Disable API access in the client.
+        placeAutocompleteAdapter.setGoogleApiClient(null);
+        Log.e(PLACETAG, "GoogleApiClient connection suspended.");
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
+        Log.e(PLACETAG, "onConnectionFailed: ConnectionResult.getErrorCode() = "
+                + connectionResult.getErrorCode());
+
+        // TODO(Developer): Check error code and notify the user of error state and resolution.
+        Toast.makeText(this,
+                "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
+                Toast.LENGTH_SHORT).show();
+
+        // Disable API access in the adapter because the client was not initialised correctly.
+        placeAutocompleteAdapter.setGoogleApiClient(null);
+
     }
+
+    /**
+     * Listener that handles selections from suggestions from the AutoCompleteTextView that
+     * displays Place suggestions.
+     * Gets the place id of the selected item and issues a request to the Places Geo Data API
+     * to retrieve more details about the place.
+     *
+     * @see com.google.android.gms.location.places.GeoDataApi#getPlaceById(com.google.android.gms.common.api.GoogleApiClient,
+     * String...)
+     */
+     private AdapterView.OnItemClickListener mAutocompleteClickListener =
+            new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    final PlaceAutocompleteAdapter.PlaceAutocomplete item = placeAutocompleteAdapter.getItem(position);
+                    final String placeId = String.valueOf(item.placeId);
+                    Log.i(PLACETAG, "Autocomplete item selected: " + item.description);
+
+                    /*
+                     Issue a request to the Places Geo Data API to retrieve a Place object with additional
+                      details about the place.
+                    */
+                    PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+                            .getPlaceById(googleApiClient, placeId);
+                    placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+                }
+            };
+
+    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
+            = new ResultCallback<PlaceBuffer>() {
+        @Override
+        public void onResult(PlaceBuffer places) {
+            if (!places.getStatus().isSuccess()) {
+                // Request did not complete successfully
+                Log.e(PLACETAG, "Place query did not complete. Error: " + places.getStatus().toString());
+
+                return;
+            }
+            final Place place = places.get(0);
+            //Set LatLng object for current location
+            destinationLatLng = place.getLatLng();
+        }
+    };
+
+    protected synchronized void rebuildGoogleApiClient() {
+        // When we build the GoogleApiClient we specify where connected and connection failed
+        // callbacks should be returned, which Google APIs our app uses and which OAuth 2.0
+        // scopes our app requests.
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, 0 /* clientId */, this)
+                .addConnectionCallbacks(this)
+                .addApi(Places.GEO_DATA_API)
+                .build();
+    }
+
+//    private void setLatLngAutocomplete(String placeId) {
+//        StringBuilder urlBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json?placeid=")
+//                .append(placeId)
+//                .append("&key=" + Secrets.PLACES_API_KEY);
+//
+//        String url = new String(urlBuilder);
+//        Log.d(getClass().getSimpleName(), url);
+//
+//        Response.ErrorListener responseErrorListener = new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                if (error != null) {
+//                    Log.d("Error Response", error.getMessage());
+//                }
+//            }
+//        };
+//
+//        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        try {
+//                            JSONObject responsePlaces = new JSONObject((String) response);
+//                            Log.d("blah", "blah");
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }, responseErrorListener);
+//    }
 
     public class GetLocationAsync extends AsyncTask<String, Void, String> {
         double latitude, longitude;
