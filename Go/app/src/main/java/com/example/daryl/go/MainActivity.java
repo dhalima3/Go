@@ -127,8 +127,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
         zoomMapCurrentLocation();
 
-//        getPrices();
-//        getTimes();
+
 
 //        destinationAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
@@ -483,8 +482,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         UberApiClient.getUberV1APIClient().getPriceEstimates(("Token " + Secrets.UBER_SERVER_TOKEN),
                 sourceLatLng.latitude,
                 sourceLatLng.longitude,
-                Constants.END_LATITUDE,
-                Constants.END_LONGITUDE,
+                destinationLatLng.latitude,
+                destinationLatLng.longitude,
                 new UberCallback<PriceEstimateList>() {
                     @Override
                     public void success(PriceEstimateList priceEstimateList, retrofit.client.Response response) {
@@ -581,6 +580,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             final Place place = places.get(0);
             //Set LatLng object for current location
             destinationLatLng = place.getLatLng();
+            Log.d("Destination LatLng", destinationLatLng.toString());
+            getPrices();
+            getTimes();
+            closeKeyboard();
         }
     };
 
