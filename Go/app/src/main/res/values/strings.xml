@@ -6,4 +6,5 @@
     <string name="google_maps_key">AIzaSyDZ26a18BhOAYWMn4_nelnXSGGDjdckziM</string>
     <string name="price_label">Price: </string>
     <string name="time_label">Time: </string>
+    <string name="drag_pickup_location"> Drag to pick-up location </string>
 </resources>

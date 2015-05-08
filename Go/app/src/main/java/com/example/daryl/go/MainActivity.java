@@ -8,6 +8,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -23,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -39,9 +41,12 @@ import com.example.daryl.go.helpers.model.PriceEstimate;
 import com.example.daryl.go.helpers.model.PriceEstimateList;
 import com.example.daryl.go.helpers.model.TimeEstimate;
 import com.example.daryl.go.helpers.model.TimeEstimateList;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -49,8 +54,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends ActionBarActivity implements LocationListener {
 
@@ -67,14 +74,23 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     private LatLng sourceLatLng = null;
     private LatLng destinationLatLng = null;
 
+    private TextView markerText;
+    private LinearLayout markerLayout;
+    private TextView sourceTextView;
+    private Geocoder geocoder;
+    private List<Address> addressMarkerList;
+    private LatLng center;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_home);
 
-        sourceAutoComplete = (AutoCompleteTextView) findViewById(R.id.pickUpEdit);
+        sourceTextView = (TextView) findViewById(R.id.pickUpEdit);
         destinationAutoComplete = (AutoCompleteTextView) findViewById(R.id.dropEdit);
+        markerText = (TextView) findViewById(R.id.locationMarkertext);
+        markerLayout = (LinearLayout) findViewById(R.id.locationMarker);
 
         uberPriceLabel = (TextView) findViewById(R.id.uberPriceLabel);
         uberTimeLabel = (TextView) findViewById(R.id.uberTimeLabel);
@@ -97,7 +113,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         handler = new Handler();
         requestQueue = Volley.newRequestQueue(this);
 
-        sourceAutoComplete.setThreshold(3);
+//        sourceAutoComplete.setThreshold(3);
         destinationAutoComplete.setThreshold(3);
 
 
@@ -117,13 +133,13 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
     public void onResume() {
         super.onResume();
 
-        sourceAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String place = ((TextView) view).getText().toString();
-                onItemSelected(place, sourceAutoComplete);
-            }
-        });
+//        sourceAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                String place = ((TextView) view).getText().toString();
+//                onItemSelected(place, sourceAutoComplete);
+//            }
+//        });
 
         destinationAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -133,29 +149,29 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
             }
         });
 
-        sourceAutoComplete.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(final Editable s) {
-                handler.removeCallbacks(null);
-                handler.removeCallbacksAndMessages(null);
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        searchPlaces(s, sourceAutoComplete);
-                    }
-                }, 1000);
-            }
-        });
+//        sourceAutoComplete.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(final Editable s) {
+//                handler.removeCallbacks(null);
+//                handler.removeCallbacksAndMessages(null);
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        searchPlaces(s, sourceAutoComplete);
+//                    }
+//                }, 1000);
+//            }
+//        });
 
         destinationAutoComplete.addTextChangedListener(new TextWatcher() {
             @Override
@@ -386,7 +402,50 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
         LatLng latLng = new LatLng(latitude, longitude);
 
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+
+        setUpMarker();
+    }
+
+    public void setUpMarker() {
+        googleMap.clear();
+
+        googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+                center = googleMap.getCameraPosition().target;
+                markerText.setText(" Drag to your location ");
+                googleMap.clear();
+//                markerLayout.setVisibility(View.VISIBLE);
+
+                try {
+                    new GetLocationAsync(center.latitude, center.longitude).execute();
+//                    addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+//                sourceTextView.setText(addresses.get(0).getAddressLine(0) + " " + addresses.get(0).getAddressLine(1) + " ");
+            }
+        });
+
+        markerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    LatLng latLng1 = new LatLng(center.latitude, center.longitude);
+
+                    Marker marker = googleMap.addMarker(new MarkerOptions()
+                            .position(latLng1)
+                            .title(" Drag to your Location ")
+                            .snippet(""));
+
+                    marker.setDraggable(true);
+                    markerLayout.setVisibility(View.GONE);
+                } catch (Exception e) {
+
+                }
+            }
+        });
     }
 
     @Override
@@ -428,9 +487,40 @@ public class MainActivity extends ActionBarActivity implements LocationListener 
                     @Override
                     public void success(TimeEstimateList timeEstimateList, retrofit.client.Response response) {
                         TimeEstimate uberX = timeEstimateList.getTimes().get(0);
-                        int uberXTimeEstimate = uberX.getEstimate();
-                        uberTimeValue.setText(String.valueOf(uberXTimeEstimate));
+                        double uberXTimeEstimate = (double) uberX.getEstimate();
+                        String uberXTimeInMinutes = Math.round(uberXTimeEstimate/60) + " min.";
+                        uberTimeValue.setText(String.valueOf(uberXTimeInMinutes));
                     }
                 });
+    }
+
+    public class GetLocationAsync extends AsyncTask<String, Void, String> {
+        double latitude, longitude;
+
+        public GetLocationAsync(double latitude, double longitude) {
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                geocoder = new Geocoder(MainActivity.this, Locale.ENGLISH);
+                addressMarkerList = geocoder.getFromLocation(latitude, longitude, 1);
+            } catch (IOException e) {
+                Log.e("tag", e.getMessage());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                sourceTextView.setText(addressMarkerList.get(0).getAddressLine(0) + " " + addressMarkerList.get(0).getAddressLine(1) + " ");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
