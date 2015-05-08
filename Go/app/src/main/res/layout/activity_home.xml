@@ -6,7 +6,7 @@
 
     <fragment
         android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_height="255dp"
         android:layout_marginTop="90dp"
         android:id="@+id/map"
         tools:context=".Home"
@@ -118,17 +118,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:layout_gravity="right|bottom">
-
-        <TableRow
-            android:id="@+id/submitRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:id="@+id/submitButton"
-                style="@style/TimeButton"
-                android:text="SUBMIT"/>
-        </TableRow>
 
         <TableRow
             android:id="@+id/uberRow"

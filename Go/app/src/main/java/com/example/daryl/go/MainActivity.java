@@ -76,7 +76,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private AutoCompleteTextView destinationAutoComplete;
     private TextView uberPriceLabel, uberTimeLabel, lyftPriceLabel, lyftTimeLabel;
     private EditText uberPriceValue, uberTimeValue, lyftPriceValue, lyftTimeValue;
-    private Button submitButton;
     private Handler handler;
     private ArrayList<String> mAddresses = new ArrayList<String>();
     private RequestQueue requestQueue;
@@ -119,14 +118,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         uberTimeValue = (EditText) findViewById(R.id.uberTimeValue);
         lyftPriceValue = (EditText) findViewById(R.id.lyftPriceValue);
         lyftTimeValue = (EditText) findViewById(R.id.lyftTimeValue);
-
-        submitButton = (Button) findViewById(R.id.submitButton);
-
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-//                startActivity(uberLaunchIntent);
-            }
-        });
 
         final Intent uberLaunchIntent = getPackageManager().getLaunchIntentForPackage("com.ubercab");
         final Intent lyftLaunchIntent = getPackageManager().getLaunchIntentForPackage("me.lyft.android");
