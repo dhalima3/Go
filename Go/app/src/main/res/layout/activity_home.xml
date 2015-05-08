@@ -136,12 +136,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp">
 
-            <ImageView
-                android:id="@+id/uberLogo"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:paddingLeft="10dp"
-                android:src="@drawable/uberlogo"/>
+            <LinearLayout
+                android:id="@+id/uberImageLayout"
+                android:layout_width="70dp"
+                android:layout_height="70dp" >
+
+                <ImageButton
+                    android:id="@+id/uberLogo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitXY"
+                    android:paddingLeft="10dp" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/uberPriceLabel"
@@ -149,7 +155,7 @@
                 android:layout_height="50dp"
                 android:text="@string/price_label"
                 android:textSize="20sp"
-                android:paddingTop="10sp"
+                android:paddingTop="20sp"
                 android:paddingRight="2sp"
                 android:paddingLeft="25sp"/>
 
@@ -166,7 +172,7 @@
                 android:layout_height="50dp"
                 android:text="@string/time_label"
                 android:textSize="20sp"
-                android:paddingTop="10sp"
+                android:paddingTop="20sp"
                 android:paddingRight="5sp"
                 android:paddingLeft="25sp"/>
 
@@ -184,12 +190,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp">
 
-            <ImageView
-                android:id="@+id/lyftLogo"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:paddingLeft="10dp"
-                android:src="@drawable/lyftlogo"/>
+
+            <LinearLayout
+                android:id="@+id/lyftImageLayout"
+                android:layout_width="70dp"
+                android:layout_height="70dp" >
+
+                <ImageButton
+                    android:id="@+id/lyftLogo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitXY"
+                    android:paddingLeft="10dp" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/lyftPriceLabel"
@@ -197,7 +210,7 @@
                 android:layout_height="50dp"
                 android:text="@string/price_label"
                 android:textSize="20sp"
-                android:paddingTop="10sp"
+                android:paddingTop="20sp"
                 android:paddingRight="2sp"
                 android:paddingLeft="25sp"/>
 
@@ -214,7 +227,7 @@
                 android:layout_height="50dp"
                 android:text="@string/time_label"
                 android:textSize="20sp"
-                android:paddingTop="10sp"
+                android:paddingTop="20sp"
                 android:paddingRight="5sp"
                 android:paddingLeft="25sp"/>
 

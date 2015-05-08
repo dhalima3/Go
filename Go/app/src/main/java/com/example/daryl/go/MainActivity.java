@@ -1,6 +1,8 @@
 package com.example.daryl.go;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -9,6 +11,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -23,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -92,6 +96,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private AutoCompleteTextView destinationAutocomplete2;
     private static final String PLACETAG = "PlaceAutocomplete";
 
+    private ImageButton uberImageButton;
+    private ImageButton lyftImageButton;
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,7 +124,29 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-//                getData();
+//                startActivity(uberLaunchIntent);
+            }
+        });
+
+        final Intent uberLaunchIntent = getPackageManager().getLaunchIntentForPackage("com.ubercab");
+        final Intent lyftLaunchIntent = getPackageManager().getLaunchIntentForPackage("me.lyft.android");
+
+        uberImageButton = (ImageButton) findViewById(R.id.uberLogo);
+        lyftImageButton = (ImageButton) findViewById(R.id.lyftLogo);
+        uberImageButton.setImageResource(R.drawable.uberlogo);
+        lyftImageButton.setImageResource(R.drawable.lyftlogo);
+        uberImageButton.setBackground(null);
+        lyftImageButton.setBackground(null);
+
+        uberImageButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(uberLaunchIntent);
+            }
+        });
+
+        lyftImageButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(lyftLaunchIntent);
             }
         });
 
