@@ -153,43 +153,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         handler = new Handler();
         requestQueue = Volley.newRequestQueue(this);
 
-//        destinationAutoComplete.setThreshold(3);
-
         zoomMapCurrentLocation();
-
-
-
-//        destinationAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                String place = ((TextView) view).getText().toString();
-//                onItemSelected(place, destinationAutoComplete);
-//            }
-//        });
-//
-//        destinationAutoComplete.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(final Editable s) {
-//                handler.removeCallbacks(null);
-//                handler.removeCallbacksAndMessages(null);
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        searchPlaces(s, destinationAutoComplete);
-//                    }
-//                }, 1000);
-//            }
-//        });
 
         if (googleApiClient == null) {
             rebuildGoogleApiClient();
@@ -208,62 +172,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     @Override
     public void onResume() {
         super.onResume();
-
-//        destinationAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                String place = ((TextView) view).getText().toString();
-//                onItemSelected(place, destinationAutoComplete);
-//            }
-//        });
-//
-////        sourceAutoComplete.addTextChangedListener(new TextWatcher() {
-////            @Override
-////            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-////
-////            }
-////
-////            @Override
-////            public void onTextChanged(CharSequence s, int start, int before, int count) {
-////
-////            }
-////
-////            @Override
-////            public void afterTextChanged(final Editable s) {
-////                handler.removeCallbacks(null);
-////                handler.removeCallbacksAndMessages(null);
-////                handler.postDelayed(new Runnable() {
-////                    @Override
-////                    public void run() {
-////                        searchPlaces(s, sourceAutoComplete);
-////                    }
-////                }, 1000);
-////            }
-////        });
-//
-//        destinationAutoComplete.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(final Editable s) {
-//                handler.removeCallbacks(null);
-//                handler.removeCallbacksAndMessages(null);
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        searchPlaces(s, destinationAutoComplete);
-//                    }
-//                }, 1000);
-//            }
-//        });
     }
 
     @Override
