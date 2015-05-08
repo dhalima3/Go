@@ -168,10 +168,11 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
         destinationAutocomplete2 = (AutoCompleteTextView) findViewById(R.id.dropEdit2);
         destinationAutocomplete2.setOnItemClickListener(mAutocompleteClickListener);
-        LatLngBounds latLngBounds =  new LatLngBounds(
-                new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
-
-        placeAutocompleteAdapter = new PlaceAutocompleteAdapter(this, android.R.layout.simple_list_item_1, latLngBounds, null);
+        //TODO Change latLngBounds to update with current location
+//        LatLngBounds latLngBounds =  new LatLngBounds(new LatLng(28.70, -127.50), new LatLng(48.85, -55.90));
+//        LatLngBounds latLngBounds = googleMap.getProjection().getVisibleRegion().latLngBounds;
+          LatLngBounds atlantaLatLngBounds = new LatLngBounds(new LatLng(33.294746, -84.928851), new LatLng(34.435028, -83.604998));
+        placeAutocompleteAdapter = new PlaceAutocompleteAdapter(this, android.R.layout.simple_list_item_1, atlantaLatLngBounds, null);
         destinationAutocomplete2.setAdapter(placeAutocompleteAdapter);
     }
 
