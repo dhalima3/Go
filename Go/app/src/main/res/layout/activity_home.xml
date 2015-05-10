@@ -6,7 +6,7 @@
 
     <fragment
         android:layout_width="match_parent"
-        android:layout_height="255dp"
+        android:layout_height="240dp"
         android:layout_marginTop="90dp"
         android:id="@+id/map"
         tools:context=".Home"
@@ -119,6 +119,22 @@
         android:layout_marginBottom="10dp"
         android:layout_gravity="right|bottom">
 
+        <TableRow
+            android:id="@+id/buttonRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/cheapestButton"
+                style="@style/TimeButton"
+                android:text="Cheapest"/>
+
+            <Button
+                android:id="@+id/fastestButton"
+                style="@style/TimeButton"
+                android:text="Fastest"/>
+
+        </TableRow>
         <TableRow
             android:id="@+id/uberRow"
             android:layout_width="match_parent"
