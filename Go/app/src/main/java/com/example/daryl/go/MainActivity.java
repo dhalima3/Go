@@ -37,6 +37,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.daryl.go.helpers.Constants;
+import com.example.daryl.go.helpers.Money;
 import com.example.daryl.go.helpers.PlaceAutocompleteAdapter;
 import com.example.daryl.go.helpers.Secrets;
 import com.example.daryl.go.helpers.api.UberApiClient;
@@ -66,6 +67,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -100,8 +103,13 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private ImageButton lyftImageButton;
 
     private JSONObject lyftApiResponse;
-    private JSONArray lyftPriceArray;
+    private JSONObject lyftPriceArray;
     private JSONArray lyftDrivers;
+    private BigDecimal minimumPrice;
+    private BigDecimal pickupFee;
+    private BigDecimal perMileFee;
+    private BigDecimal perMinuteFee;
+    private Button cheapestButton;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -150,7 +158,14 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         requestQueue = Volley.newRequestQueue(this);
 
         zoomMapCurrentLocation();
-        getLyftApiResponse();
+
+        cheapestButton = (Button) findViewById(R.id.cheapestButton);
+        cheapestButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                getLyftApiResponse();
+            }
+        });
+
 
         if (googleApiClient == null) {
             rebuildGoogleApiClient();
@@ -371,7 +386,13 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     public void onResponse(Object response) {
                         try {
                             lyftApiResponse = new JSONObject((String) response);
-//                            Log.d("Blah", lyftApiResponse.toString());
+                            lyftPriceArray = lyftApiResponse.getJSONObject("pricing");
+                            minimumPrice = Money.parse((String) lyftPriceArray.get("minimum"), Locale.US);
+                            pickupFee = Money.parse((String) lyftPriceArray.get("pickup"), Locale.US);
+                            perMileFee = Money.parse((String) lyftPriceArray.get("perMile"), Locale.US);
+                            perMinuteFee = Money.parse((String) lyftPriceArray.get("perMinute"), Locale.US);
+
+                            lyftDrivers = lyftApiResponse.getJSONArray("drivers");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -381,10 +402,52 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         requestQueue.add(stringRequest);
     }
 
-    public void parseLyftApiResponse() throws JSONException {
-        Log.d("Blah", lyftApiResponse.toString());
-        lyftPriceArray = lyftApiResponse.getJSONArray("pricing");
-        Log.d("Blah2", lyftPriceArray.toString());
+    public LatLng getClosestDriver() {
+
+        if (lyftDrivers.length() == 0) {
+            return null;
+        }
+
+        long farthestDistance = Long.MAX_VALUE;
+        for (int i = 0; i < lyftDrivers.length(); i++) {
+
+        }
+        return null;
+    }
+
+    public double getDuration(double driverLatitude, double driverLongitude) {
+        double duration = 0;
+        StringBuilder urlBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/distancematrix/json?")
+                .append("origins=" + 37.781955 + "," + -122.402367)
+                .append("&destinations=" + driverLatitude + "," + driverLongitude)
+                .append("&key=" + Secrets.PLACES_API_KEY);
+
+        String url = new String(urlBuilder);
+        Log.d(getClass().getSimpleName(), url);
+
+        Response.ErrorListener responseErrorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error != null) {
+                    Log.d("Error Response", error.getMessage());
+                }
+            }
+        };
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener() {
+
+                    @Override
+                    public void onResponse(Object response) {
+                        try {
+                            JSONObject responseDuration = new JSONObject((String) response);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, responseErrorListener);
+
+        requestQueue.add(stringRequest);
     }
 
     public void getLyftPrice() {
