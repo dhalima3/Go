@@ -106,6 +106,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private BigDecimal pickupFee;
     private BigDecimal perMileFee;
     private BigDecimal perMinuteFee;
+    private final BigDecimal trustSafetyFee = new BigDecimal(1.50);
     private Button cheapestButton;
     private long duration = 0;
 
@@ -415,7 +416,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 JSONObject location = driver.getJSONObject("location");
                 driverLatitude = location.getDouble("lat");
                 driverLongitude = location.getDouble("lng");
-                getLyftDuration(driverLatitude, driverLongitude);
+                getDuration(driverLatitude, driverLongitude);
                 if (duration < farthestDistance) {
                     farthestDistance = duration;
                 }
@@ -427,10 +428,11 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         lyftTimeValue.setText(Long.toString(farthestDistance));
     }
 
-    public void getLyftDuration(double driverLatitude, double driverLongitude) {
+    public void getDuration(double destinationLatitude, double destinationLongitude) {
         StringBuilder urlBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/distancematrix/json?")
+                //TODO replace origin latitude/longitude
                 .append("origins=" + 37.781955 + "," + -122.402367)
-                .append("&destinations=" + driverLatitude + "," + driverLongitude)
+                .append("&destinations=" + destinationLatitude + "," + destinationLongitude)
                 .append("&key=" + Secrets.PLACES_API_KEY);
 
         String url = new String(urlBuilder);
@@ -467,8 +469,21 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         requestQueue.add(stringRequest);
     }
 
-    public void getLyftPrice() {
+    public void setLyftPrice() {
+        float[] distanceArray = new float[1];
+        BigDecimal finalPrice = new BigDecimal(0);
 
+        Location.distanceBetween(sourceLatLng.latitude, sourceLatLng.longitude,
+                destinationLatLng.latitude, destinationLatLng.longitude, distanceArray);
+
+        float distance = distanceArray[0];
+        getDuration(destinationLatLng.latitude, destinationLatLng.longitude);
+        finalPrice = pickupFee
+                .add(perMileFee.multiply(new BigDecimal(distance)))
+                .add(perMinuteFee.multiply(new BigDecimal(duration)))
+                .add(trustSafetyFee);
+
+        lyftPriceValue.setText(finalPrice.toString());
     }
 
     @Override
