@@ -36,7 +36,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.daryl.go.helpers.Constants;
 import com.example.daryl.go.helpers.Money;
 import com.example.daryl.go.helpers.PlaceAutocompleteAdapter;
 import com.example.daryl.go.helpers.Secrets;
@@ -63,12 +62,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -110,6 +107,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private BigDecimal perMileFee;
     private BigDecimal perMinuteFee;
     private Button cheapestButton;
+    private long duration = 0;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -163,6 +161,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         cheapestButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 getLyftApiResponse();
+                setLyftTimes();
             }
         });
 
@@ -402,21 +401,33 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         requestQueue.add(stringRequest);
     }
 
-    public LatLng getClosestDriver() {
+    public void setLyftTimes() {
+        double driverLatitude, driverLongitude;
 
         if (lyftDrivers.length() == 0) {
-            return null;
+            return;
         }
 
         long farthestDistance = Long.MAX_VALUE;
         for (int i = 0; i < lyftDrivers.length(); i++) {
-
+            try {
+                JSONObject driver = (JSONObject) lyftDrivers.get(i);
+                JSONObject location = driver.getJSONObject("location");
+                driverLatitude = location.getDouble("lat");
+                driverLongitude = location.getDouble("lng");
+                getLyftDuration(driverLatitude, driverLongitude);
+                if (duration < farthestDistance) {
+                    farthestDistance = duration;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        return null;
+
+        lyftTimeValue.setText(Long.toString(farthestDistance));
     }
 
-    public double getDuration(double driverLatitude, double driverLongitude) {
-        double duration = 0;
+    public void getLyftDuration(double driverLatitude, double driverLongitude) {
         StringBuilder urlBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/distancematrix/json?")
                 .append("origins=" + 37.781955 + "," + -122.402367)
                 .append("&destinations=" + driverLatitude + "," + driverLongitude)
@@ -441,6 +452,12 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     public void onResponse(Object response) {
                         try {
                             JSONObject responseDuration = new JSONObject((String) response);
+                            JSONObject rows = responseDuration.getJSONObject("rows");
+                            JSONObject elementsArray = rows.getJSONObject("elements");
+                            JSONObject distanceJSON = elementsArray.getJSONObject("distance");
+                            JSONObject durationJSON = elementsArray.getJSONObject("duration");
+                            //TODO Can access distance from this request too (Refractor)
+                            duration = durationJSON.getLong("value");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -453,11 +470,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     public void getLyftPrice() {
 
     }
-
-//    TODO Implement for java
-    public double getLyftTime(double sourceLatitude, double sourceLongitude) { return 0; }
-
-
 
     @Override
     public void onLocationChanged(Location location) {
