@@ -62,6 +62,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -97,6 +98,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
     private ImageButton uberImageButton;
     private ImageButton lyftImageButton;
+
+    private JSONObject lyftApiResponse;
+    private JSONArray lyftPriceArray;
+    private JSONArray lyftDrivers;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -145,6 +150,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         requestQueue = Volley.newRequestQueue(this);
 
         zoomMapCurrentLocation();
+        getLyftApiResponse();
 
         if (googleApiClient == null) {
             rebuildGoogleApiClient();
@@ -339,22 +345,50 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 //        return timeList;
 //    }
 
-//    TODO This is a backup for the API call.  Need to implement for Lyft Plus
-    public double getLyftPrice(double sourceLatitude, double sourceLongitude, double destinationLatitude, double destinationLongitude){
-        double baseCharge = 1.35;
-        double buffer = .75;
-        double costPerMile = 1.29;
-        double costPerMinute = .17;
-        double trustSafetyFee = 1.50;
-        double finalPrice = 0;
+    public void getLyftApiResponse(){
+        double sourceLatitude = 37.781955;
+        double sourceLongitude = -122.402367;
+        StringBuilder urlBuilder = new StringBuilder("http://getlassu.com/api/2/lyft?")
+                .append("originLat=" + sourceLatitude)
+                .append("&originLng=" + sourceLongitude);
 
-//        finalPrice =
+        String url = new String(urlBuilder);
+        Log.d(getClass().getSimpleName(), url);
 
-        if (finalPrice < 6.00) {
-            finalPrice = 6.00;
-        }
+        Response.ErrorListener responseErrorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error != null) {
+                    Log.d("Error Response", error.getMessage());
+                }
+            }
+        };
 
-        return finalPrice;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener() {
+
+                    @Override
+                    public void onResponse(Object response) {
+                        try {
+                            lyftApiResponse = new JSONObject((String) response);
+//                            Log.d("Blah", lyftApiResponse.toString());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, responseErrorListener);
+
+        requestQueue.add(stringRequest);
+    }
+
+    public void parseLyftApiResponse() throws JSONException {
+        Log.d("Blah", lyftApiResponse.toString());
+        lyftPriceArray = lyftApiResponse.getJSONArray("pricing");
+        Log.d("Blah2", lyftPriceArray.toString());
+    }
+
+    public void getLyftPrice() {
+
     }
 
 //    TODO Implement for java

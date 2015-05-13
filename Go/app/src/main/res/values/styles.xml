@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -18,7 +18,7 @@
         <item name="android:layout_width">10dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:background">#ff6b35</item>
+        <item name="android:background">@drawable/button</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 
