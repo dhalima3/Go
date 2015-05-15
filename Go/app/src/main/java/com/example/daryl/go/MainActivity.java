@@ -41,6 +41,7 @@ import com.example.daryl.go.helpers.PlaceAutocompleteAdapter;
 import com.example.daryl.go.helpers.Secrets;
 import com.example.daryl.go.helpers.api.UberApiClient;
 import com.example.daryl.go.helpers.api.UberCallback;
+import com.example.daryl.go.helpers.jsonHelper;
 import com.example.daryl.go.helpers.model.PriceEstimate;
 import com.example.daryl.go.helpers.model.PriceEstimateList;
 import com.example.daryl.go.helpers.model.TimeEstimate;
@@ -61,12 +62,31 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -99,7 +119,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private ImageButton uberImageButton;
     private ImageButton lyftImageButton;
 
-    private JSONObject lyftApiResponse;
+    private ArrayList<JSONObject> lyftApiList;
     private JSONObject lyftPriceArray;
     private JSONArray lyftDrivers;
     private BigDecimal minimumPrice;
@@ -108,7 +128,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private BigDecimal perMinuteFee;
     private final BigDecimal trustSafetyFee = new BigDecimal(1.50);
     private Button cheapestButton;
-    private long duration = 0;
+    private ArrayList<Long> durationList;
+    private jsonHelper jsonHelper;
+    private long duration = 1;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -161,11 +183,16 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         cheapestButton = (Button) findViewById(R.id.cheapestButton);
         cheapestButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+//                Log.d("Blah", Long.toString(getDuration(37.795279, -122.433416)));
                 getLyftApiResponse();
-                setLyftTimes();
+//                setLyftTimes();
+                new GetDurationAsync(37.795279, -122.433416).execute();
+                Log.d("Blah", Long.toString(duration));
             }
         });
 
+        durationList = new ArrayList<Long>();
+        jsonHelper = new jsonHelper();
 
         if (googleApiClient == null) {
             rebuildGoogleApiClient();
@@ -385,14 +412,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     @Override
                     public void onResponse(Object response) {
                         try {
-                            lyftApiResponse = new JSONObject((String) response);
-                            lyftPriceArray = lyftApiResponse.getJSONObject("pricing");
-                            minimumPrice = Money.parse((String) lyftPriceArray.get("minimum"), Locale.US);
-                            pickupFee = Money.parse((String) lyftPriceArray.get("pickup"), Locale.US);
-                            perMileFee = Money.parse((String) lyftPriceArray.get("perMile"), Locale.US);
-                            perMinuteFee = Money.parse((String) lyftPriceArray.get("perMinute"), Locale.US);
-
-                            lyftDrivers = lyftApiResponse.getJSONArray("drivers");
+                            JSONObject lyftApiResponse = new JSONObject((String) response);
+                            parseLyftApiResponse(lyftApiResponse);
+                            setLyftTimes();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -402,6 +424,23 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         requestQueue.add(stringRequest);
     }
 
+    public void parseLyftApiResponse(JSONObject lyftApiResponse) {
+//        JSONObject lyftApiResponse = lyftApiList.get(0);
+        try {
+            lyftPriceArray = lyftApiResponse.getJSONObject("pricing");
+            minimumPrice = Money.parse((String) lyftPriceArray.get("minimum"), Locale.US);
+            pickupFee = Money.parse((String) lyftPriceArray.get("pickup"), Locale.US);
+            perMileFee = Money.parse((String) lyftPriceArray.get("perMile"), Locale.US);
+            perMinuteFee = Money.parse((String) lyftPriceArray.get("perMinute"), Locale.US);
+
+            lyftDrivers = lyftApiResponse.getJSONArray("drivers");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+    
     public void setLyftTimes() {
         double driverLatitude, driverLongitude;
 
@@ -409,64 +448,105 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             return;
         }
 
-        long farthestDistance = Long.MAX_VALUE;
+        float longestDistance = 100000;
+        float[] distanceArray = new float[1];
+        double shortestDriverLatitude = 0;
+        double shortestDriverLongitude = 0;
+
+        float distance = 0;
+
         for (int i = 0; i < lyftDrivers.length(); i++) {
             try {
                 JSONObject driver = (JSONObject) lyftDrivers.get(i);
                 JSONObject location = driver.getJSONObject("location");
                 driverLatitude = location.getDouble("lat");
                 driverLongitude = location.getDouble("lng");
-                getDuration(driverLatitude, driverLongitude);
-                if (duration < farthestDistance) {
-                    farthestDistance = duration;
+//                new GetDurationAsync(driverLatitude, driverLongitude).execute();
+                Location.distanceBetween(sourceLatLng.latitude, sourceLatLng.longitude,
+                        driverLatitude, driverLongitude, distanceArray);
+
+                distance = distanceArray[0];
+                if (distance < longestDistance) {
+                    longestDistance = distance;
+                    shortestDriverLatitude = driverLatitude;
+                    shortestDriverLongitude = driverLongitude;
                 }
-            } catch (Exception e) {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
 
-        lyftTimeValue.setText(Long.toString(farthestDistance));
+//            long duration = getDuration(shortestDriverLatitude, shortestDriverLongitude);
+            new GetDurationAsync(shortestDriverLatitude, shortestDriverLongitude).execute();
+
+//            longestDuration = durationList.indexOf(Collections.min(durationList));
+
+            lyftTimeValue.setText(Long.toString(duration));
+        }
     }
 
-    public void getDuration(double destinationLatitude, double destinationLongitude) {
+    public long getDuration(double destinationLatitude, double destinationLongitude) {
+        long duration = 0;
+
         StringBuilder urlBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/distancematrix/json?")
                 //TODO replace origin latitude/longitude
-                .append("origins=" + 37.781955 + "," + -122.402367)
+                    .append("origins=" + 37.781955 + "," + -122.402367)
                 .append("&destinations=" + destinationLatitude + "," + destinationLongitude)
                 .append("&key=" + Secrets.PLACES_API_KEY);
 
         String url = new String(urlBuilder);
-        Log.d(getClass().getSimpleName(), url);
+        HttpResponse response = null;
 
-        Response.ErrorListener responseErrorListener = new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (error != null) {
-                    Log.d("Error Response", error.getMessage());
+        try {
+            HttpClient client = new DefaultHttpClient();
+            HttpGet request = new HttpGet();
+            request.setURI(new URI(url));
+            response = client.execute(request);
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            InputStream inputStream = response.getEntity().getContent();
+            String inputStreamString = convertStreamToString(inputStream);
+            JSONObject responseDuration = new JSONObject(inputStreamString);
+
+            JSONObject rows = responseDuration.getJSONObject("rows");
+            JSONObject elementsArray = rows.getJSONObject("elements");
+            JSONObject distanceJSON = elementsArray.getJSONObject("distance");
+            JSONObject durationJSON = elementsArray.getJSONObject("duration");
+            //TODO Can access distance from this request too (Refractor)
+            duration = durationJSON.getLong("value");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return duration;
+    }
+
+    public static String convertStreamToString(InputStream inputStream) throws IOException {
+        if (inputStream != null) {
+            Writer writer = new StringWriter();
+
+            char[] buffer = new char[1024];
+            try {
+                Reader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"),1024);
+                int n;
+                while ((n = reader.read(buffer)) != -1) {
+                    writer.write(buffer, 0, n);
                 }
+            } finally {
+                inputStream.close();
             }
-        };
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener() {
-
-                    @Override
-                    public void onResponse(Object response) {
-                        try {
-                            JSONObject responseDuration = new JSONObject((String) response);
-                            JSONObject rows = responseDuration.getJSONObject("rows");
-                            JSONObject elementsArray = rows.getJSONObject("elements");
-                            JSONObject distanceJSON = elementsArray.getJSONObject("distance");
-                            JSONObject durationJSON = elementsArray.getJSONObject("duration");
-                            //TODO Can access distance from this request too (Refractor)
-                            duration = durationJSON.getLong("value");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, responseErrorListener);
-
-        requestQueue.add(stringRequest);
+            return writer.toString();
+        } else {
+            return "";
+        }
     }
 
     public void setLyftPrice() {
@@ -480,7 +560,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         getDuration(destinationLatLng.latitude, destinationLatLng.longitude);
         finalPrice = pickupFee
                 .add(perMileFee.multiply(new BigDecimal(distance)))
-                .add(perMinuteFee.multiply(new BigDecimal(duration)))
+//                .add(perMinuteFee.multiply(new BigDecimal(duration)))
                 .add(trustSafetyFee);
 
         lyftPriceValue.setText(finalPrice.toString());
@@ -681,6 +761,87 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 //                    }
 //                }, responseErrorListener);
 //    }
+
+    public class GetDurationAsync extends AsyncTask<String, Void, String> {
+        double destinationLatitude, destinationLongitude;
+
+        public GetDurationAsync(double destinationLatitude, double destinationLongitude) {
+            Log.d("lat", Double.toString(destinationLatitude));
+            Log.d("lon", Double.toString(destinationLongitude));
+            this.destinationLatitude = destinationLatitude;
+            this.destinationLongitude = destinationLongitude;
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            StringBuilder urlBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/distancematrix/json?")
+                    //TODO replace origin latitude/longitude
+                    .append("origins=" + 37.781955 + "," + -122.402367)
+                    .append("&destinations=" + destinationLatitude + "," + destinationLongitude)
+                    .append("&key=" + Secrets.PLACES_API_KEY);
+
+            String url = new String(urlBuilder);
+            JSONObject jsonObject = jsonHelper.getJSONFromURL(url);
+            JSONObject rows = null;
+
+            try {
+                rows = jsonObject.getJSONObject("rows");
+                JSONObject elementsArray = rows.getJSONObject("elements");
+                JSONObject distanceJSON = elementsArray.getJSONObject("distance");
+                JSONObject durationJSON = elementsArray.getJSONObject("duration");
+                //TODO Can access distance from this request too (Refractor)
+                duration = durationJSON.getInt("value");
+//                durationList.add(duration);
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+
+        }
+
+        public void getDuration(double destinationLatitude, double destinationLongitude) {
+//            long duration = 0;
+//
+//
+//            HttpResponse response = null;
+//
+//            try {
+//                HttpClient client = new DefaultHttpClient();
+//                HttpGet request = new HttpGet();
+//                request.setURI(new URI(url));
+//                response = client.execute(request);
+//            } catch (ClientProtocolException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } catch (URISyntaxException e) {
+//                e.printStackTrace();
+//            }
+//
+//            try {
+//                InputStream inputStream = response.getEntity().getContent();
+//                String inputStreamString = convertStreamToString(inputStream);
+//                JSONObject responseDuration = new JSONObject(inputStreamString);
+//
+//                JSONObject rows = responseDuration.getJSONObject("rows");
+//                JSONObject elementsArray = rows.getJSONObject("elements");
+//                JSONObject distanceJSON = elementsArray.getJSONObject("distance");
+//                JSONObject durationJSON = elementsArray.getJSONObject("duration");
+//                //TODO Can access distance from this request too (Refractor)
+//                duration = durationJSON.getLong("value");
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//
+//            return duration;
+        }
+    }
 
     public class GetLocationAsync extends AsyncTask<String, Void, String> {
         double latitude, longitude;
