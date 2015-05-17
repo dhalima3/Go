@@ -351,34 +351,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         requestQueue.add(stringRequest);
     }
 
-//    public void getData() {
-//        double sourceLatitude = sourceLatLng.latitude;
-//        double sourceLongitude = sourceLatLng.longitude;
-//        double destinationLatitude = destinationLatLng.latitude;
-//        double destinationLongitude = destinationLatLng.longitude;
-//        UberClient uberClient = new UberClient(Secrets.UBER_SERVER_TOKEN, RestAdapter.LogLevel.BASIC);
-//        Prices prices = uberClient.getApiService().getPriceEstimates(sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
-//
-//        List<Price> uberPriceList = getUberPriceList(uberClient, sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
-//        Log.d("Price List", uberPriceList.toString());
-//        List<Time> uberTimeList = getUberTimeList(uberClient, sourceLatitude, sourceLongitude);
-//        double lyftPrice = getLyftPrice(sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
-//    }
-//
-//    public List<Price> getUberPriceList(UberClient uberClient, double sourceLatitude, double sourceLongitude, double destinationLatitude, double destinationLongitude) {
-//
-//        Prices prices = uberClient.getApiService().getPriceEstimates(sourceLatitude, sourceLongitude, destinationLatitude, destinationLongitude);
-//        List<Price> priceList = prices.getPrices();
-//        return priceList;
-//    }
-//
-//    public List<Time> getUberTimeList(UberClient uberClient, double sourceLatitude, double sourceLongitude) {
-//
-//        Times times = uberClient.getApiService().getTimeEstimates(sourceLatitude, sourceLongitude, null, null);
-//        List<Time> timeList = times.getTimes();
-//        return timeList;
-//    }
-
     public void getLyftApiResponse(){
         StringBuilder urlBuilder = new StringBuilder("http://getlassu.com/api/2/lyft?")
                 .append("originLat=" + sourceLatLng.latitude)
