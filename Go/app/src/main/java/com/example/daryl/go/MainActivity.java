@@ -179,11 +179,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         cheapestButton = (Button) findViewById(R.id.cheapestButton);
         cheapestButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-//                Log.d("Blah", Long.toString(getDuration(37.795279, -122.433416)));
                 getLyftApiResponse();
-//                setLyftTimes();
-//                new GetDurationAsync(37.795279, -122.433416).execute();
-//                Log.d("Blah", Long.toString(duration));
             }
         });
 
