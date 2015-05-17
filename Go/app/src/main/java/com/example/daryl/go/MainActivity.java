@@ -79,10 +79,14 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 
@@ -377,6 +381,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                             JSONObject lyftApiResponse = new JSONObject((String) response);
                             parseLyftApiResponse(lyftApiResponse);
                             setLyftTimes();
+                            setLyftPrice();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -439,9 +444,13 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
             Log.d("Latitude Before", Double.toString(shortestDriverLatitude));
             Log.d("Longitude Before", Double.toString(shortestDriverLongitude));
-            new GetDurationAsync(shortestDriverLatitude, shortestDriverLongitude).execute();
+            new GetDurationTimeAsync(shortestDriverLatitude, shortestDriverLongitude).execute();
 
         }
+    }
+
+    public void setLyftPrice() {
+        new GetDurationPriceAsync().execute();
     }
 
     public long getDuration(double destinationLatitude, double destinationLongitude) {
@@ -509,22 +518,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         }
     }
 
-    public void setLyftPrice() {
-        float[] distanceArray = new float[1];
-        BigDecimal finalPrice = new BigDecimal(0);
-
-        Location.distanceBetween(sourceLatLng.latitude, sourceLatLng.longitude,
-                destinationLatLng.latitude, destinationLatLng.longitude, distanceArray);
-
-        float distance = distanceArray[0];
-        getDuration(destinationLatLng.latitude, destinationLatLng.longitude);
-        finalPrice = pickupFee
-                .add(perMileFee.multiply(new BigDecimal(distance)))
-//                .add(perMinuteFee.multiply(new BigDecimal(duration)))
-                .add(trustSafetyFee);
-
-        lyftPriceValue.setText(finalPrice.toString());
-    }
 
     @Override
     public void onLocationChanged(Location location) {
@@ -674,6 +667,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             //Set LatLng object for current location
             destinationLatLng = place.getLatLng();
             Log.d("Destination LatLng", destinationLatLng.toString());
+            getLyftApiResponse();
             getPrices();
             getTimes();
             closeKeyboard();
@@ -691,10 +685,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 .build();
     }
 
-    public class GetDurationAsync extends AsyncTask<String, Void, Long> {
+    public class GetDurationTimeAsync extends AsyncTask<String, Void, Long> {
         double destinationLatitude, destinationLongitude;
 
-        public GetDurationAsync(double destinationLatitude, double destinationLongitude) {
+        public GetDurationTimeAsync(double destinationLatitude, double destinationLongitude) {
             Log.d("Destination Latitude", Double.toString(destinationLatitude));
             Log.d("Destination Longitude", Double.toString(destinationLongitude));
             this.destinationLatitude = destinationLatitude;
@@ -728,9 +722,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 //TODO Can access distance from this request too (Refractor)
                 duration = durationJSON.getInt("value");
                 Log.d("Duration", Long.toString(duration));
-//                durationList.add(duration);
-
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -741,8 +732,84 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
         @Override
         protected void onPostExecute(Long duration) {
-            String time = duration/60 + " min.";
+            String time = duration/60L + " min.";
             lyftTimeValue.setText(time);
+        }
+    }
+
+    public class GetDurationPriceAsync extends AsyncTask<String, Void, JSONObject> {
+
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            Log.d("Price Source Latitude", Double.toString(sourceLatLng.latitude));
+            Log.d("Price Source Longitude", Double.toString(sourceLatLng.longitude));
+
+            StringBuilder urlBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/distancematrix/json?")
+                    //TODO replace origin latitude/longitude
+                    .append("origins=" + sourceLatLng.latitude + "," + sourceLatLng.longitude)
+                    .append("&destinations=" + destinationLatLng.latitude + "," + destinationLatLng.longitude)
+                    .append("&key=" + Secrets.PLACES_API_KEY);
+
+            String url = new String(urlBuilder);
+            JSONObject jsonObject = jsonHelper.getJSONFromURL(url);
+            JSONArray rows = null;
+            long duration = 1;
+            JSONObject elementsObject = new JSONObject();
+
+            try {
+                rows = jsonObject.getJSONArray("rows");
+                JSONObject elements = rows.getJSONObject(0);
+                JSONArray elementsArray = elements.getJSONArray("elements");
+                elementsObject = elementsArray.getJSONObject(0);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return elementsObject;
+
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject elementsObject) {
+            float distance = 0;
+            long duration = 0;
+            float distanceInMiles;
+            long durationInMinutes;
+
+            try {
+                JSONObject distanceJSON = elementsObject.getJSONObject("distance");
+                JSONObject durationJSON = elementsObject.getJSONObject("duration");
+                distance = distanceJSON.getLong("value");
+                duration = durationJSON.getLong("value");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.d("Distance Before conv", Float.toString(distance));
+            distanceInMiles = distance/1000f/1.609344f;
+            durationInMinutes = duration/60L;
+
+//            float[] distanceArray = new float[1];
+            BigDecimal finalPrice;
+//
+//            Location.distanceBetween(sourceLatLng.latitude, sourceLatLng.longitude,
+//                    destinationLatLng.latitude, destinationLatLng.longitude, distanceArray);
+//
+//            float distance = distanceArray[0];
+            Log.d("Distance Lyft Price", Float.toString(distanceInMiles));
+            Log.d("Duration Lyft Price", Long.toString(durationInMinutes));
+            Log.d("Pick up fee", pickupFee.toString());
+            Log.d("Per mile fee", perMileFee.toString());
+            Log.d("Per minute fee", perMinuteFee.toString());
+            Log.d("Trust/safety fee", trustSafetyFee.toString());
+
+            finalPrice = pickupFee
+                    .add(perMileFee.multiply(new BigDecimal(distanceInMiles)))
+                    .add(perMinuteFee.multiply(new BigDecimal(durationInMinutes)))
+                    .add(trustSafetyFee);
+
+            Log.d("Final Price", finalPrice.toString());
+            //TODO Improve price formatter
+            lyftPriceValue.setText("$" + finalPrice.setScale(0, RoundingMode.HALF_UP));
         }
     }
 
