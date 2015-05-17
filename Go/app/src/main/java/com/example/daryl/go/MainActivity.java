@@ -723,37 +723,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 .build();
     }
 
-//    private void setLatLngAutocomplete(String placeId) {
-//        StringBuilder urlBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json?placeid=")
-//                .append(placeId)
-//                .append("&key=" + Secrets.PLACES_API_KEY);
-//
-//        String url = new String(urlBuilder);
-//        Log.d(getClass().getSimpleName(), url);
-//
-//        Response.ErrorListener responseErrorListener = new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                if (error != null) {
-//                    Log.d("Error Response", error.getMessage());
-//                }
-//            }
-//        };
-//
-//        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        try {
-//                            JSONObject responsePlaces = new JSONObject((String) response);
-//                            Log.d("blah", "blah");
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }, responseErrorListener);
-//    }
-
     public class GetDurationAsync extends AsyncTask<String, Void, Long> {
         double destinationLatitude, destinationLongitude;
 
