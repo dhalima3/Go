@@ -62,12 +62,10 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -85,8 +83,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -130,7 +126,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private Button cheapestButton;
     private ArrayList<Long> durationList;
     private jsonHelper jsonHelper;
-    private long duration = 1;
+    private long lyftDuration;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -186,8 +182,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 //                Log.d("Blah", Long.toString(getDuration(37.795279, -122.433416)));
                 getLyftApiResponse();
 //                setLyftTimes();
-                new GetDurationAsync(37.795279, -122.433416).execute();
-                Log.d("Blah", Long.toString(duration));
+//                new GetDurationAsync(37.795279, -122.433416).execute();
+//                Log.d("Blah", Long.toString(duration));
             }
         });
 
@@ -388,11 +384,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 //    }
 
     public void getLyftApiResponse(){
-        double sourceLatitude = 37.781955;
-        double sourceLongitude = -122.402367;
         StringBuilder urlBuilder = new StringBuilder("http://getlassu.com/api/2/lyft?")
-                .append("originLat=" + sourceLatitude)
-                .append("&originLng=" + sourceLongitude);
+                .append("originLat=" + sourceLatLng.latitude)
+                .append("&originLng=" + sourceLatLng.longitude);
 
         String url = new String(urlBuilder);
         Log.d(getClass().getSimpleName(), url);
@@ -448,7 +442,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             return;
         }
 
-        float longestDistance = 100000;
+        float longestDistance = Float.MAX_VALUE;
         float[] distanceArray = new float[1];
         double shortestDriverLatitude = 0;
         double shortestDriverLongitude = 0;
@@ -461,7 +455,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 JSONObject location = driver.getJSONObject("location");
                 driverLatitude = location.getDouble("lat");
                 driverLongitude = location.getDouble("lng");
-//                new GetDurationAsync(driverLatitude, driverLongitude).execute();
+
                 Location.distanceBetween(sourceLatLng.latitude, sourceLatLng.longitude,
                         driverLatitude, driverLongitude, distanceArray);
 
@@ -475,12 +469,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 e.printStackTrace();
             }
 
-//            long duration = getDuration(shortestDriverLatitude, shortestDriverLongitude);
+            Log.d("Latitude Before", Double.toString(shortestDriverLatitude));
+            Log.d("Longitude Before", Double.toString(shortestDriverLongitude));
             new GetDurationAsync(shortestDriverLatitude, shortestDriverLongitude).execute();
 
-//            longestDuration = durationList.indexOf(Collections.min(durationList));
-
-            lyftTimeValue.setText(Long.toString(duration));
         }
     }
 
@@ -762,36 +754,43 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 //                }, responseErrorListener);
 //    }
 
-    public class GetDurationAsync extends AsyncTask<String, Void, String> {
+    public class GetDurationAsync extends AsyncTask<String, Void, Long> {
         double destinationLatitude, destinationLongitude;
 
         public GetDurationAsync(double destinationLatitude, double destinationLongitude) {
-            Log.d("lat", Double.toString(destinationLatitude));
-            Log.d("lon", Double.toString(destinationLongitude));
+            Log.d("Destination Latitude", Double.toString(destinationLatitude));
+            Log.d("Destination Longitude", Double.toString(destinationLongitude));
             this.destinationLatitude = destinationLatitude;
             this.destinationLongitude = destinationLongitude;
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected Long doInBackground(String... params) {
+            Log.d("Source Latitude", Double.toString(sourceLatLng.latitude));
+            Log.d("Source Longitude", Double.toString(sourceLatLng.longitude));
 
             StringBuilder urlBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/distancematrix/json?")
                     //TODO replace origin latitude/longitude
-                    .append("origins=" + 37.781955 + "," + -122.402367)
+                    .append("origins=" + sourceLatLng.latitude + "," + sourceLatLng.longitude)
                     .append("&destinations=" + destinationLatitude + "," + destinationLongitude)
                     .append("&key=" + Secrets.PLACES_API_KEY);
 
             String url = new String(urlBuilder);
             JSONObject jsonObject = jsonHelper.getJSONFromURL(url);
-            JSONObject rows = null;
+            JSONArray rows = null;
+            long duration = 1;
+
 
             try {
-                rows = jsonObject.getJSONObject("rows");
-                JSONObject elementsArray = rows.getJSONObject("elements");
-                JSONObject distanceJSON = elementsArray.getJSONObject("distance");
-                JSONObject durationJSON = elementsArray.getJSONObject("duration");
+                rows = jsonObject.getJSONArray("rows");
+                JSONObject elements = rows.getJSONObject(0);
+                JSONArray elementsArray = elements.getJSONArray("elements");
+                JSONObject elementsObject = elementsArray.getJSONObject(0);
+                JSONObject distanceJSON = elementsObject.getJSONObject("distance");
+                JSONObject durationJSON = elementsObject.getJSONObject("duration");
                 //TODO Can access distance from this request too (Refractor)
                 duration = durationJSON.getInt("value");
+                Log.d("Duration", Long.toString(duration));
 //                durationList.add(duration);
 
 
@@ -799,47 +798,14 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 e.printStackTrace();
             }
 
-            return null;
+            return duration;
 
         }
 
-        public void getDuration(double destinationLatitude, double destinationLongitude) {
-//            long duration = 0;
-//
-//
-//            HttpResponse response = null;
-//
-//            try {
-//                HttpClient client = new DefaultHttpClient();
-//                HttpGet request = new HttpGet();
-//                request.setURI(new URI(url));
-//                response = client.execute(request);
-//            } catch (ClientProtocolException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } catch (URISyntaxException e) {
-//                e.printStackTrace();
-//            }
-//
-//            try {
-//                InputStream inputStream = response.getEntity().getContent();
-//                String inputStreamString = convertStreamToString(inputStream);
-//                JSONObject responseDuration = new JSONObject(inputStreamString);
-//
-//                JSONObject rows = responseDuration.getJSONObject("rows");
-//                JSONObject elementsArray = rows.getJSONObject("elements");
-//                JSONObject distanceJSON = elementsArray.getJSONObject("distance");
-//                JSONObject durationJSON = elementsArray.getJSONObject("duration");
-//                //TODO Can access distance from this request too (Refractor)
-//                duration = durationJSON.getLong("value");
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//
-//            return duration;
+        @Override
+        protected void onPostExecute(Long duration) {
+            String time = duration/60 + " min.";
+            lyftTimeValue.setText(time);
         }
     }
 
