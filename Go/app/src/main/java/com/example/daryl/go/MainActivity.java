@@ -128,6 +128,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private BigDecimal perMinuteFee;
     private final BigDecimal trustSafetyFee = new BigDecimal(1.50);
     private Button cheapestButton;
+    private Button fastestButton;
     private ArrayList<Long> durationList;
     private jsonHelper jsonHelper;
     private long lyftDuration;
@@ -183,7 +184,68 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         cheapestButton = (Button) findViewById(R.id.cheapestButton);
         cheapestButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                getLyftApiResponse();
+                String lyftPrice = lyftPriceValue.getText().toString().substring(1);
+                String uberPrice = uberPriceValue.getText().toString();
+                String[] uberPriceArray = uberPrice.split("-");
+                int uberLowPrice = Integer.parseInt(uberPriceArray[0].substring(1));
+                int uberHighPrice = Integer.parseInt(uberPriceArray[1]);
+                double uberMedianPrice = (uberLowPrice+uberHighPrice)/2;
+                Log.d("Lyft Price", lyftPrice);
+                Log.d("Uber Low Price", Integer.toString(uberLowPrice));
+                Log.d("Uber High Price", Integer.toString(uberHighPrice));
+                Log.d("Uber Median Price", Double.toString(uberMedianPrice));
+
+                String lyftTimeString = lyftTimeValue.getText().toString().split(" ")[0];
+                String uberTimeString = uberTimeValue.getText().toString().split(" ")[0];
+                int lyftTime = Integer.parseInt(lyftTimeString);
+                int uberTime = Integer.parseInt(uberTimeString);
+
+                if (Integer.parseInt(lyftPrice) < uberMedianPrice) {
+                    startActivity(lyftLaunchIntent);
+                }
+                else if (Integer.parseInt(lyftPrice) > uberMedianPrice) {
+                    startActivity(uberLaunchIntent);
+                }
+                else if (Integer.parseInt(lyftPrice) == uberMedianPrice && lyftTime < uberTime) {
+                    startActivity(lyftLaunchIntent);
+                }
+                else if (Integer.parseInt(lyftPrice) == uberMedianPrice && lyftTime > uberTime) {
+                    startActivity(uberLaunchIntent);
+                }
+            }
+        });
+
+        fastestButton = (Button) findViewById(R.id.fastestButton);
+        fastestButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String lyftPrice = lyftPriceValue.getText().toString().substring(1);
+                String uberPrice = uberPriceValue.getText().toString();
+                String[] uberPriceArray = uberPrice.split("-");
+                int uberLowPrice = Integer.parseInt(uberPriceArray[0].substring(1));
+                int uberHighPrice = Integer.parseInt(uberPriceArray[1]);
+                double uberMedianPrice = (uberLowPrice+uberHighPrice)/2;
+                Log.d("Lyft Price", lyftPrice);
+                Log.d("Uber Low Price", Integer.toString(uberLowPrice));
+                Log.d("Uber High Price", Integer.toString(uberHighPrice));
+                Log.d("Uber Median Price", Double.toString(uberMedianPrice));
+
+                String lyftTimeString = lyftTimeValue.getText().toString().split(" ")[0];
+                String uberTimeString = uberTimeValue.getText().toString().split(" ")[0];
+                int lyftTime = Integer.parseInt(lyftTimeString);
+                int uberTime = Integer.parseInt(uberTimeString);
+
+                if (lyftTime < uberTime) {
+                    startActivity(lyftLaunchIntent);
+                }
+                else if (lyftTime > uberTime) {
+                    startActivity(uberLaunchIntent);
+                }
+                else if (lyftTime == uberTime && Integer.parseInt(lyftPrice) < uberMedianPrice) {
+                    startActivity(lyftLaunchIntent);
+                }
+                else if (lyftTime == uberTime && Integer.parseInt(lyftPrice) > uberMedianPrice) {
+                    startActivity(uberLaunchIntent);
+                }
             }
         });
 
@@ -444,9 +506,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
             Log.d("Latitude Before", Double.toString(shortestDriverLatitude));
             Log.d("Longitude Before", Double.toString(shortestDriverLongitude));
-            new GetDurationTimeAsync(shortestDriverLatitude, shortestDriverLongitude).execute();
-
         }
+
+        new GetDurationTimeAsync(shortestDriverLatitude, shortestDriverLongitude).execute();
     }
 
     public void setLyftPrice() {
@@ -720,7 +782,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 JSONObject distanceJSON = elementsObject.getJSONObject("distance");
                 JSONObject durationJSON = elementsObject.getJSONObject("duration");
                 //TODO Can access distance from this request too (Refractor)
-                duration = durationJSON.getInt("value");
+                duration = durationJSON.getInt("value")-1;
                 Log.d("Duration", Long.toString(duration));
             } catch (JSONException e) {
                 e.printStackTrace();
