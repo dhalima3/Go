@@ -9,20 +9,16 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
-import android.text.Editable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,8 +55,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -82,11 +76,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 
@@ -94,14 +85,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
     private GoogleMap googleMap;
-    private AutoCompleteTextView destinationAutoComplete;
     private TextView uberPriceLabel, uberTimeLabel, lyftPriceLabel, lyftTimeLabel;
     private EditText uberPriceValue, uberTimeValue, lyftPriceValue, lyftTimeValue;
-    private Handler handler;
-    private ArrayList<String> mAddresses = new ArrayList<String>();
     private RequestQueue requestQueue;
-    private Marker sourceMarker;
-    private Marker destinationMarker;
     private LatLng sourceLatLng = null;
     private LatLng destinationLatLng = null;
 
@@ -113,13 +99,12 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
     protected GoogleApiClient googleApiClient;
     private PlaceAutocompleteAdapter placeAutocompleteAdapter;
-    private AutoCompleteTextView destinationAutocomplete2;
+    private AutoCompleteTextView destinationAutocomplete;
     private static final String PLACETAG = "PlaceAutocomplete";
 
     private ImageButton uberImageButton;
     private ImageButton lyftImageButton;
 
-    private ArrayList<JSONObject> lyftApiList;
     private JSONObject lyftPriceArray;
     private JSONArray lyftDrivers;
     private BigDecimal minimumPrice;
@@ -129,9 +114,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private final BigDecimal trustSafetyFee = new BigDecimal(1.50);
     private Button cheapestButton;
     private Button fastestButton;
-    private ArrayList<Long> durationList;
     private jsonHelper jsonHelper;
-    private long lyftDuration;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -176,7 +159,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             }
         });
 
-        handler = new Handler();
         requestQueue = Volley.newRequestQueue(this);
 
         zoomMapCurrentLocation();
@@ -249,21 +231,20 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             }
         });
 
-        durationList = new ArrayList<Long>();
         jsonHelper = new jsonHelper();
 
         if (googleApiClient == null) {
             rebuildGoogleApiClient();
         }
 
-        destinationAutocomplete2 = (AutoCompleteTextView) findViewById(R.id.dropEdit2);
-        destinationAutocomplete2.setOnItemClickListener(mAutocompleteClickListener);
+        destinationAutocomplete = (AutoCompleteTextView) findViewById(R.id.dropEdit2);
+        destinationAutocomplete.setOnItemClickListener(mAutocompleteClickListener);
         //TODO Change latLngBounds to update with current location
 //        LatLngBounds latLngBounds =  new LatLngBounds(new LatLng(28.70, -127.50), new LatLng(48.85, -55.90));
 //        LatLngBounds latLngBounds = googleMap.getProjection().getVisibleRegion().latLngBounds;
           LatLngBounds atlantaLatLngBounds = new LatLngBounds(new LatLng(33.294746, -84.928851), new LatLng(34.435028, -83.604998));
         placeAutocompleteAdapter = new PlaceAutocompleteAdapter(this, android.R.layout.simple_list_item_1, atlantaLatLngBounds, null);
-        destinationAutocomplete2.setAdapter(placeAutocompleteAdapter);
+        destinationAutocomplete.setAdapter(placeAutocompleteAdapter);
     }
 
     @Override
@@ -320,103 +301,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         inputMethodManager.hideSoftInputFromWindow((null == getCurrentFocus()) ? null : getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
-    public void onItemSelected(String place, AutoCompleteTextView view) {
-        closeKeyboard();
-        view.clearListSelection();
-        view.dismissDropDown();
-
-        Log.d("Place", place);
-        view.clearFocus();
-        Geocoder geocoder = new Geocoder(this);
-        List<Address> addressList = null;
-        try {
-            addressList = geocoder.getFromLocationName(place, 1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (addressList.size() > 0) {
-            Address address = addressList.get(0);
-            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
-
-            if (view.getId() == R.id.pickUpEdit) {
-                if (sourceMarker != null) {
-                    sourceMarker.remove();
-                }
-                sourceMarker = googleMap.addMarker(new MarkerOptions().title("Pickup -" + place).position(latLng));
-                sourceLatLng = latLng;
-                uberPriceValue.setText(Double.toString(latLng.latitude));
-                uberTimeValue.setText(Double.toString(latLng.longitude));
-            } else {
-                if (destinationMarker != null) {
-                    destinationMarker.remove();
-                }
-                destinationMarker = googleMap.addMarker(new MarkerOptions().title("Destination - " + place).position(latLng));
-                destinationLatLng = latLng;
-                lyftPriceValue.setText(Double.toString(latLng.latitude));
-                lyftTimeValue.setText(Double.toString(latLng.longitude));
-//                TODO Change when getUberTime is activated
-//                getUberPrice(latLng);
-            }
-        }
-    }
-
-    //TODO Refactor in order to use recommended google places api guidelines
-    private void searchPlaces(Editable s, final AutoCompleteTextView view) {
-        String inputQuery = s.toString();
-        if (inputQuery.isEmpty()) {
-            return;
-        }
-        StringBuilder urlBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=")
-                .append(Uri.encode(inputQuery))
-                .append("&key=" + Secrets.PLACES_API_KEY)
-                .append("&location=")
-                .append(googleMap.getMyLocation().getLatitude() + "," + googleMap.getMyLocation().getLongitude());
-
-        String url = new String(urlBuilder);
-        Log.d(getClass().getSimpleName(), url);
-
-//        TODO: Use Retrofit instead of Volley
-//        Request a string response from the provided URL
-
-        Response.ErrorListener responseErrorListener = new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (error != null) {
-                    Log.d("Error Response", error.getMessage());
-                }
-            }
-        };
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener() {
-
-                    @Override
-                    public void onResponse(Object response) {
-                        try {
-                            JSONObject responsePlaces = new JSONObject((String) response);
-                            JSONArray predictionsArray = responsePlaces.getJSONArray("predictions");
-                            mAddresses.clear();
-                            for (int i = 0; i < predictionsArray.length(); i++) {
-                                JSONObject predictionObject = predictionsArray.getJSONObject(i);
-                                String description = predictionObject.getString("description");
-                                mAddresses.add(description);
-                            }
-//                            TODO: Multiple adapters?
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, mAddresses);
-                            view.setAdapter(adapter);
-//                            view.showDropDown();
-                            Log.d(getClass().getSimpleName(), mAddresses.toString());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, responseErrorListener);
-
-        requestQueue.add(stringRequest);
-    }
-
     public void getLyftApiResponse(){
         StringBuilder urlBuilder = new StringBuilder("http://getlassu.com/api/2/lyft?")
                 .append("originLat=" + sourceLatLng.latitude)
@@ -454,7 +338,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     }
 
     public void parseLyftApiResponse(JSONObject lyftApiResponse) {
-//        JSONObject lyftApiResponse = lyftApiList.get(0);
         try {
             lyftPriceArray = lyftApiResponse.getJSONObject("pricing");
             minimumPrice = Money.parse((String) lyftPriceArray.get("minimum"), Locale.US);
