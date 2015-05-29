@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
@@ -91,7 +92,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private LatLng destinationLatLng = null;
 
     private TextView markerText;
-    private TextView sourceTextView;
+    private AutoCompleteTextView sourceAutocomplete;
     private Geocoder geocoder;
     private List<Address> addressMarkerList;
     private LatLng center;
@@ -122,7 +123,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
         setContentView(R.layout.activity_home);
 
-        sourceTextView = (TextView) findViewById(R.id.pickUpEdit);
+        sourceAutocomplete = (AutoCompleteTextView) findViewById(R.id.pickUpEdit);
         markerText = (TextView) findViewById(R.id.locationMarkertext);
 
         uberPriceLabel = (TextView) findViewById(R.id.uberPriceLabel);
@@ -236,6 +237,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         }
 
         destinationAutocomplete = (AutoCompleteTextView) findViewById(R.id.dropEdit);
+        destinationAutocomplete.setSelectAllOnFocus(true);
         destinationAutocomplete.setOnItemClickListener(mAutocompleteClickListener);
         //TODO Change latLngBounds to update with current location
 //        LatLngBounds latLngBounds =  new LatLngBounds(new LatLng(28.70, -127.50), new LatLng(48.85, -55.90));
@@ -297,6 +299,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     public void closeKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow((null == getCurrentFocus()) ? null : getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    public void unFocusTextView() {
+        destinationAutocomplete.clearFocus();
     }
 
     public void getLyftApiResponse(){
@@ -614,6 +620,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             getPrices();
             getTimes();
             closeKeyboard();
+            unFocusTextView();
         }
     };
 
@@ -779,7 +786,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         @Override
         protected void onPostExecute(String result) {
             try {
-                sourceTextView.setText(addressMarkerList.get(0).getAddressLine(0) + " " + addressMarkerList.get(0).getAddressLine(1) + " ");
+                sourceAutocomplete.setText(addressMarkerList.get(0).getAddressLine(0) + " " + addressMarkerList.get(0).getAddressLine(1) + " ");
                 sourceLatLng = new LatLng(latitude, longitude);
             } catch (Exception e) {
                 e.printStackTrace();
