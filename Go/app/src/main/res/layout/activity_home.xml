@@ -44,16 +44,24 @@
 
     <TextView
         android:id="@+id/pickUpEdit"
-        style="@style/PlaceView"
-        android:hint=" Drag pin to pick-up location"
+        style="@android:style/Theme.Material"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter pickup location"
         android:textSize="20sp"
+        android:textColor="@android:color/black"
+        android:textColorHint="@android:color/darker_gray"
         android:gravity="top"/>
 
     <AutoCompleteTextView
-        android:id="@+id/dropEdit2"
-        style="@style/PlaceView"
+        android:id="@+id/dropEdit"
+        style="@android:style/Theme.Material"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:hint="Enter dropoff location"
         android:textSize="20sp"
+        android:textColor="@android:color/black"
+        android:textColorHint="@android:color/darker_gray"
         android:layout_marginTop="40dp"/>
 
     <LinearLayout

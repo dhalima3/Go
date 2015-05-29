@@ -77,7 +77,6 @@ import java.math.RoundingMode;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -124,7 +123,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         setContentView(R.layout.activity_home);
 
         sourceTextView = (TextView) findViewById(R.id.pickUpEdit);
-//        destinationAutoComplete = (AutoCompleteTextView) findViewById(R.id.dropEdit);
         markerText = (TextView) findViewById(R.id.locationMarkertext);
 
         uberPriceLabel = (TextView) findViewById(R.id.uberPriceLabel);
@@ -237,7 +235,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             rebuildGoogleApiClient();
         }
 
-        destinationAutocomplete = (AutoCompleteTextView) findViewById(R.id.dropEdit2);
+        destinationAutocomplete = (AutoCompleteTextView) findViewById(R.id.dropEdit);
         destinationAutocomplete.setOnItemClickListener(mAutocompleteClickListener);
         //TODO Change latLngBounds to update with current location
 //        LatLngBounds latLngBounds =  new LatLngBounds(new LatLng(28.70, -127.50), new LatLng(48.85, -55.90));
