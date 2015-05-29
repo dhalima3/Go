@@ -9,6 +9,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -116,6 +117,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private Button fastestButton;
     private jsonHelper jsonHelper;
 
+    private Intent uberLaunchIntent;
+    private Intent lyftLaunchIntent;
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,9 +140,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         lyftPriceValue = (EditText) findViewById(R.id.lyftPriceValue);
         lyftTimeValue = (EditText) findViewById(R.id.lyftTimeValue);
 
-        final Intent uberLaunchIntent = getPackageManager().getLaunchIntentForPackage("com.ubercab");
-        final Intent lyftLaunchIntent = getPackageManager().getLaunchIntentForPackage("me.lyft.android");
-
         uberImageButton = (ImageButton) findViewById(R.id.uberLogo);
         lyftImageButton = (ImageButton) findViewById(R.id.lyftLogo);
         uberImageButton.setImageResource(R.drawable.uberlogo);
@@ -146,15 +147,18 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         uberImageButton.setBackground(null);
         lyftImageButton.setBackground(null);
 
+        uberLaunchIntent = getPackageManager().getLaunchIntentForPackage("com.ubercab");
+        lyftLaunchIntent = getPackageManager().getLaunchIntentForPackage("me.lyft.android");
+
         uberImageButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                startActivity(uberLaunchIntent);
+                launchUberApp();
             }
         });
 
         lyftImageButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                startActivity(lyftLaunchIntent);
+                launchLyftApp();
             }
         });
 
@@ -182,16 +186,16 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 int uberTime = Integer.parseInt(uberTimeString);
 
                 if (Integer.parseInt(lyftPrice) < uberMedianPrice) {
-                    startActivity(lyftLaunchIntent);
+                    launchLyftApp();
                 }
                 else if (Integer.parseInt(lyftPrice) > uberMedianPrice) {
-                    startActivity(uberLaunchIntent);
+                    launchUberApp();
                 }
                 else if (Integer.parseInt(lyftPrice) == uberMedianPrice && lyftTime < uberTime) {
-                    startActivity(lyftLaunchIntent);
+                    launchLyftApp();
                 }
                 else if (Integer.parseInt(lyftPrice) == uberMedianPrice && lyftTime > uberTime) {
-                    startActivity(uberLaunchIntent);
+                    launchUberApp();
                 }
             }
         });
@@ -216,16 +220,16 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 int uberTime = Integer.parseInt(uberTimeString);
 
                 if (lyftTime < uberTime) {
-                    startActivity(lyftLaunchIntent);
+                    launchLyftApp();
                 }
                 else if (lyftTime > uberTime) {
-                    startActivity(uberLaunchIntent);
+                    launchUberApp();
                 }
                 else if (lyftTime == uberTime && Integer.parseInt(lyftPrice) < uberMedianPrice) {
-                    startActivity(lyftLaunchIntent);
+                    launchLyftApp();
                 }
                 else if (lyftTime == uberTime && Integer.parseInt(lyftPrice) > uberMedianPrice) {
-                    startActivity(uberLaunchIntent);
+                    launchUberApp();
                 }
             }
         });
@@ -542,6 +546,30 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                         uberTimeValue.setText(String.valueOf(uberXTimeInMinutes));
                     }
                 });
+    }
+
+    public void launchUberApp() {
+        if (uberLaunchIntent == null) {
+            launchPlayStore("com.ubercab");
+        } else {
+            startActivity(uberLaunchIntent);
+        }
+    }
+
+    public void launchLyftApp() {
+        if (lyftLaunchIntent == null) {
+            launchPlayStore("me.lyft.android");
+        } else {
+            startActivity(lyftLaunchIntent);
+        }
+    }
+
+    public void launchPlayStore(String appPackageName) {
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        } catch (android.content.ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
     }
 
     @Override
