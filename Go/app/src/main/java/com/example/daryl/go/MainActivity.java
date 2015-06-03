@@ -816,6 +816,11 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             try {
                 sourceAutocomplete.setText(addressMarkerList.get(0).getAddressLine(0) + " " + addressMarkerList.get(0).getAddressLine(1) + " ");
                 sourceLatLng = new LatLng(latitude, longitude);
+                if (destinationLatLng != null) {
+                    getLyftApiResponse();
+                    getPrices();
+                    getTimes();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
