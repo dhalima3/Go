@@ -545,8 +545,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                         uberPriceValue.setText(uberXPriceEstimate);
 //                        uberPriceProgress.stop();
 //                        uberPriceView.setVisibility(View.VISIBLE);
-                        uberPriceLabel.setPadding(25, 60, 2, 0);
-                        uberTimeLabel.setPadding(45, 60, 2, 0);
+                        uberPriceLabel.setPadding(dpToPixel(15), dpToPixel(20), dpToPixel(2), dpToPixel(0));
+                        uberTimeLabel.setPadding(dpToPixel(15), dpToPixel(20), dpToPixel(2), dpToPixel(0));
                     }
                 });
     }
@@ -588,6 +588,13 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         } catch (android.content.ActivityNotFoundException e) {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
         }
+    }
+
+    public int dpToPixel(int dp) {
+        //TODO Move scale to global scope
+        final float scale = getResources().getDisplayMetrics().density;
+        int px = (int) (dp * scale + 0.5f);
+        return px;
     }
 
     @Override
@@ -862,8 +869,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             Log.d("Final Price", finalPrice.toString());
             //TODO Improve price formatter
             lyftPriceValue.setText("$" + finalPrice.setScale(0, RoundingMode.HALF_UP));
-            lyftPriceLabel.setPadding(25, 60, 2, 0);
-            lyftTimeLabel.setPadding(45, 60, 2, 0);
+            lyftPriceLabel.setPadding(dpToPixel(15), dpToPixel(20), dpToPixel(2), dpToPixel(0));
+            lyftTimeLabel.setPadding(dpToPixel(15), dpToPixel(20), dpToPixel(2), dpToPixel(0));
         }
     }
 
