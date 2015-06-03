@@ -126,143 +126,141 @@
         android:layout_marginBottom="10dp"
         android:layout_gravity="right|bottom">
 
-        <TableRow
-            android:id="@+id/buttonRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            <TableRow
+                android:id="@+id/buttonRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/cheapestButton"
-                style="@style/TimeButton"
-                android:text="Cheapest"/>
+                <Button
+                    android:id="@+id/cheapestButton"
+                    style="@style/TimeButton"
+                    android:text="Cheapest"/>
 
-            <Button
-                android:id="@+id/fastestButton"
-                style="@style/TimeButton"
-                android:text="Fastest"/>
+                <Button
+                    android:id="@+id/fastestButton"
+                    style="@style/TimeButton"
+                    android:text="Fastest"/>
 
-        </TableRow>
+            </TableRow>
 
-        <TableRow
-            android:id="@+id/uberRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+            <TableRow
+                android:id="@+id/uberRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
 
-            <LinearLayout
-                android:id="@+id/uberImageLayout"
-                android:layout_width="70dp"
-                android:layout_height="70dp" >
+                <LinearLayout
+                    android:id="@+id/uberImageLayout"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp" >
 
-                <ImageButton
-                    android:id="@+id/uberLogo"
+                    <ImageButton
+                        android:id="@+id/uberLogo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleType="fitXY"
+                        android:paddingLeft="10dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/uberPriceLabel"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleType="fitXY"
-                    android:paddingLeft="10dp" />
-            </LinearLayout>
+                    android:layout_height="50dp"
+                    android:text="@string/price_label"
+                    android:textSize="20sp"
+                    android:paddingTop="20sp"
+                    android:paddingRight="2sp"
+                    android:paddingLeft="25sp"/>
 
-            <TextView
-                android:id="@+id/uberPriceLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:text="@string/price_label"
-                android:textSize="20sp"
-                android:paddingTop="20sp"
-                android:paddingRight="2sp"
-                android:paddingLeft="25sp"/>
-            <RelativeLayout>
+                    <!--<com.rey.material.widget.ProgressView-->
+                        <!--android:id="@+id/uberPriceProgress"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="48dp"-->
+                        <!--app:pv_autostart="false"-->
+                        <!--app:pv_circular="true"-->
+                        <!--app:pv_progressStyle="@style/Material.Drawable.CircularProgress"-->
+                        <!--app:pv_progressMode="indeterminate"/>-->
+                    <EditText
+                        android:id="@+id/uberPriceValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:textSize="20sp"
+                        android:paddingTop="10sp"/>
+
+                <TextView
+                    android:id="@+id/uberTimeLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:text="@string/time_label"
+                    android:textSize="20sp"
+                    android:paddingTop="20sp"
+                    android:paddingRight="5sp"
+                    android:paddingLeft="25sp"/>
+
                 <EditText
-                    android:id="@+id/uberPriceValue"
+                    android:id="@+id/uberTimeValue"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:textSize="20sp"
                     android:paddingTop="10sp"/>
 
-                <com.rey.material.widget.ProgressView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    app:pv_autostart="true"
-                    app:pv_circular="true"
-                    app:pv_progressStyle="@style/Material.Drawable.CircularProgress"
-                    app:pv_progressMode="indeterminate"/>
-            </RelativeLayout>
+            </TableRow>
 
-            <TextView
-                android:id="@+id/uberTimeLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:text="@string/time_label"
-                android:textSize="20sp"
-                android:paddingTop="20sp"
-                android:paddingRight="5sp"
-                android:paddingLeft="25sp"/>
-
-            <EditText
-                android:id="@+id/uberTimeValue"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:textSize="20sp"
-                android:paddingTop="10sp"/>
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/lyftRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+            <TableRow
+                android:id="@+id/lyftRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
 
 
-            <LinearLayout
-                android:id="@+id/lyftImageLayout"
-                android:layout_width="70dp"
-                android:layout_height="70dp" >
+                <LinearLayout
+                    android:id="@+id/lyftImageLayout"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp" >
 
-                <ImageButton
-                    android:id="@+id/lyftLogo"
+                    <ImageButton
+                        android:id="@+id/lyftLogo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleType="fitXY"
+                        android:paddingLeft="10dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/lyftPriceLabel"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleType="fitXY"
-                    android:paddingLeft="10dp" />
-            </LinearLayout>
+                    android:layout_height="50dp"
+                    android:text="@string/price_label"
+                    android:textSize="20sp"
+                    android:paddingTop="20sp"
+                    android:paddingRight="2sp"
+                    android:paddingLeft="25sp"/>
 
-            <TextView
-                android:id="@+id/lyftPriceLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:text="@string/price_label"
-                android:textSize="20sp"
-                android:paddingTop="20sp"
-                android:paddingRight="2sp"
-                android:paddingLeft="25sp"/>
+                <EditText
+                    android:id="@+id/lyftPriceValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:textSize="20sp"
+                    android:paddingTop="10sp"/>
 
-            <EditText
-                android:id="@+id/lyftPriceValue"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:textSize="20sp"
-                android:paddingTop="10sp"/>
+                <TextView
+                    android:id="@+id/lyftTimeLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:text="@string/time_label"
+                    android:textSize="20sp"
+                    android:paddingTop="20sp"
+                    android:paddingRight="5sp"
+                    android:paddingLeft="25sp"/>
 
-            <TextView
-                android:id="@+id/lyftTimeLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:text="@string/time_label"
-                android:textSize="20sp"
-                android:paddingTop="20sp"
-                android:paddingRight="5sp"
-                android:paddingLeft="25sp"/>
-
-            <EditText
-                android:id="@+id/lyftTimeValue"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:textSize="20sp"
-                android:paddingTop="10sp"/>
-        </TableRow>
-
+                <EditText
+                    android:id="@+id/lyftTimeValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:textSize="20sp"
+                    android:paddingTop="10sp"/>
+            </TableRow>
 
     </TableLayout>
-
 
 </FrameLayout>

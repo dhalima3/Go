@@ -25,6 +25,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,6 +60,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.rey.material.widget.ProgressView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -120,6 +124,11 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private Intent uberLaunchIntent;
     private Intent lyftLaunchIntent;
 
+//    TODO Implement or delete progress bar code
+//    private ProgressView uberPriceProgress;
+//    private RelativeLayout uberPriceView;
+//    private ProgressView lyftProgress;
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +158,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
         uberLaunchIntent = getPackageManager().getLaunchIntentForPackage("com.ubercab");
         lyftLaunchIntent = getPackageManager().getLaunchIntentForPackage("me.lyft.android");
+
+//        uberPriceProgress = (ProgressView) findViewById(R.id.uberPriceProgress);
+//        uberPriceView = (RelativeLayout) findViewById(R.id.uberPriceView);
 
         uberImageButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -526,9 +538,13 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 new UberCallback<PriceEstimateList>() {
                     @Override
                     public void success(PriceEstimateList priceEstimateList, retrofit.client.Response response) {
+//                        uberPriceView.setVisibility(View.GONE);
+//                        uberPriceProgress.start();
                         PriceEstimate uberX = priceEstimateList.getPrices().get(0);
                         String uberXPriceEstimate = uberX.getEstimate();
                         uberPriceValue.setText(uberXPriceEstimate);
+//                        uberPriceProgress.stop();
+//                        uberPriceView.setVisibility(View.VISIBLE);
                     }
                 });
     }
