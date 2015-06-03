@@ -129,7 +129,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 //    private RelativeLayout uberPriceView;
 //    private ProgressView lyftProgress;
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -153,8 +152,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         lyftImageButton = (ImageButton) findViewById(R.id.lyftLogo);
         uberImageButton.setImageResource(R.drawable.uberlogo);
         lyftImageButton.setImageResource(R.drawable.lyftlogo);
-        uberImageButton.setBackground(null);
-        lyftImageButton.setBackground(null);
 
         uberLaunchIntent = getPackageManager().getLaunchIntentForPackage("com.ubercab");
         lyftLaunchIntent = getPackageManager().getLaunchIntentForPackage("me.lyft.android");
@@ -261,6 +258,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
           LatLngBounds atlantaLatLngBounds = new LatLngBounds(new LatLng(33.294746, -84.928851), new LatLng(34.435028, -83.604998));
         placeAutocompleteAdapter = new PlaceAutocompleteAdapter(this, android.R.layout.simple_list_item_1, atlantaLatLngBounds, null);
         destinationAutocomplete.setAdapter(placeAutocompleteAdapter);
+
+        sourceAutocomplete.setOnItemClickListener(mAutocompleteClickListener);
+        sourceAutocomplete.setAdapter(placeAutocompleteAdapter);
     }
 
     @Override
