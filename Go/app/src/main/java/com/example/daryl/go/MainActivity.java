@@ -332,7 +332,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         Response.ErrorListener responseErrorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (error != null) {
+                if (error != null && error.getMessage() != null) {
                     Log.d("Error Response", error.getMessage());
                 }
             }

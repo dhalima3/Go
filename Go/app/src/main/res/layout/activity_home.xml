@@ -168,16 +168,16 @@
                 android:layout_height="50dp"
                 android:text="@string/price_label"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                android:paddingTop="20sp"
-                android:paddingRight="2sp"
-                android:paddingLeft="35sp"/>
+                android:paddingTop="20dp"
+                android:paddingRight="2dp"
+                android:paddingLeft="35dp"/>
 
             <EditText
                 android:id="@+id/uberPriceValue"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                android:paddingTop="10sp"/>
+                android:paddingTop="10dp"/>
 
             <TextView
                 android:id="@+id/uberTimeLabel"
@@ -185,16 +185,16 @@
                 android:layout_height="50dp"
                 android:text="@string/time_label"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                android:paddingTop="20sp"
-                android:paddingRight="5sp"
-                android:paddingLeft="45sp"/>
+                android:paddingTop="20dp"
+                android:paddingRight="5dp"
+                android:paddingLeft="45dp"/>
 
             <EditText
                 android:id="@+id/uberTimeValue"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                android:paddingTop="10sp"/>
+                android:paddingTop="10dp"/>
         </TableRow>
 
         <TableRow
@@ -224,16 +224,16 @@
                 android:layout_height="50dp"
                 android:text="@string/price_label"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                android:paddingTop="20sp"
-                android:paddingRight="2sp"
-                android:paddingLeft="35sp"/>
+                android:paddingTop="20dp"
+                android:paddingRight="2dp"
+                android:paddingLeft="35dp"/>
 
             <EditText
                 android:id="@+id/lyftPriceValue"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                android:paddingTop="10sp"/>
+                android:paddingTop="10dp"/>
 
             <TextView
                 android:id="@+id/lyftTimeLabel"
@@ -241,16 +241,16 @@
                 android:layout_height="50dp"
                 android:text="@string/time_label"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                android:paddingTop="20sp"
-                android:paddingRight="5sp"
-                android:paddingLeft="45sp"/>
+                android:paddingTop="20dp"
+                android:paddingRight="5dp"
+                android:paddingLeft="45dp"/>
 
             <EditText
                 android:id="@+id/lyftTimeValue"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                android:paddingTop="10sp"/>
+                android:paddingTop="10dp"/>
         </TableRow>
 
     </TableLayout>
