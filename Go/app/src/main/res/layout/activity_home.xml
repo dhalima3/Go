@@ -174,6 +174,7 @@
 
             <EditText
                 android:id="@+id/uberPriceValue"
+                android:background="@null"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:textSize="@dimen/abc_text_size_medium_material"
@@ -187,10 +188,11 @@
                 android:textSize="@dimen/abc_text_size_medium_material"
                 android:paddingTop="20dp"
                 android:paddingRight="5dp"
-                android:paddingLeft="45dp"/>
+                android:paddingLeft="60dp"/>
 
             <EditText
                 android:id="@+id/uberTimeValue"
+                android:background="@null"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:textSize="@dimen/abc_text_size_medium_material"
@@ -202,7 +204,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp">
-
 
             <LinearLayout
                 android:id="@+id/lyftImageLayout"
@@ -230,6 +231,7 @@
 
             <EditText
                 android:id="@+id/lyftPriceValue"
+                android:background="@null"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:textSize="@dimen/abc_text_size_medium_material"
@@ -243,10 +245,11 @@
                 android:textSize="@dimen/abc_text_size_medium_material"
                 android:paddingTop="20dp"
                 android:paddingRight="5dp"
-                android:paddingLeft="45dp"/>
+                android:paddingLeft="60dp"/>
 
             <EditText
                 android:id="@+id/lyftTimeValue"
+                android:background="@null"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:textSize="@dimen/abc_text_size_medium_material"

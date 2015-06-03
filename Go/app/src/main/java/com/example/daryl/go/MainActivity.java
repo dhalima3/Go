@@ -546,7 +546,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 //                        uberPriceProgress.stop();
 //                        uberPriceView.setVisibility(View.VISIBLE);
                         uberPriceLabel.setPadding(dpToPixel(15), dpToPixel(20), dpToPixel(2), dpToPixel(0));
-                        uberTimeLabel.setPadding(dpToPixel(15), dpToPixel(20), dpToPixel(2), dpToPixel(0));
+                        uberTimeLabel.setPadding(dpToPixel(20), dpToPixel(20), dpToPixel(2), dpToPixel(0));
                     }
                 });
     }
@@ -870,7 +870,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             //TODO Improve price formatter
             lyftPriceValue.setText("$" + finalPrice.setScale(0, RoundingMode.HALF_UP));
             lyftPriceLabel.setPadding(dpToPixel(15), dpToPixel(20), dpToPixel(2), dpToPixel(0));
-            lyftTimeLabel.setPadding(dpToPixel(15), dpToPixel(20), dpToPixel(2), dpToPixel(0));
+            lyftTimeLabel.setPadding(dpToPixel(20), dpToPixel(20), dpToPixel(2), dpToPixel(0));
         }
     }
 
