@@ -1,6 +1,5 @@
 package com.example.daryl.go;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -11,23 +10,18 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,7 +54,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.rey.material.widget.ProgressView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -216,7 +209,14 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 String uberPrice = uberPriceValue.getText().toString();
                 String[] uberPriceArray = uberPrice.split("-");
                 int uberLowPrice = Integer.parseInt(uberPriceArray[0].substring(1));
-                int uberHighPrice = Integer.parseInt(uberPriceArray[1]);
+
+                //TODO Checking if there is an uber High price, code review
+                int uberHighPrice = uberLowPrice;
+
+                if (uberPriceArray.length > 1) {
+                    Integer.parseInt(uberPriceArray[1]);
+                }
+
                 double uberMedianPrice = (uberLowPrice+uberHighPrice)/2;
                 Log.d("Lyft Price", lyftPrice);
                 Log.d("Uber Low Price", Integer.toString(uberLowPrice));
@@ -251,7 +251,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
         destinationAutocomplete = (AutoCompleteTextView) findViewById(R.id.dropEdit);
         destinationAutocomplete.setSelectAllOnFocus(true);
-        destinationAutocomplete.setOnItemClickListener(mAutocompleteClickListener);
+        destinationAutocomplete.setOnItemClickListener(mAutocompleteDestinationClickListener);
         //TODO Change latLngBounds to update with current location
 //        LatLngBounds latLngBounds =  new LatLngBounds(new LatLng(28.70, -127.50), new LatLng(48.85, -55.90));
 //        LatLngBounds latLngBounds = googleMap.getProjection().getVisibleRegion().latLngBounds;
@@ -259,7 +259,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         placeAutocompleteAdapter = new PlaceAutocompleteAdapter(this, android.R.layout.simple_list_item_1, atlantaLatLngBounds, null);
         destinationAutocomplete.setAdapter(placeAutocompleteAdapter);
 
-        sourceAutocomplete.setOnItemClickListener(mAutocompleteClickListener);
+        sourceAutocomplete.setOnItemClickListener(mAutocompleteSourceClickListener);
         sourceAutocomplete.setAdapter(placeAutocompleteAdapter);
     }
 
@@ -545,6 +545,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                         uberPriceValue.setText(uberXPriceEstimate);
 //                        uberPriceProgress.stop();
 //                        uberPriceView.setVisibility(View.VISIBLE);
+                        uberPriceLabel.setPadding(25, 60, 2, 0);
+                        uberTimeLabel.setPadding(45, 60, 2, 0);
                     }
                 });
     }
@@ -627,7 +629,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
      * @see com.google.android.gms.location.places.GeoDataApi#getPlaceById(com.google.android.gms.common.api.GoogleApiClient,
      * String...)
      */
-     private AdapterView.OnItemClickListener mAutocompleteClickListener =
+     private AdapterView.OnItemClickListener mAutocompleteSourceClickListener =
             new AdapterView.OnItemClickListener() {
 
                 @Override
@@ -642,11 +644,63 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     */
                     PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
                             .getPlaceById(googleApiClient, placeId);
-                    placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+                    placeResult.setResultCallback(mUpdatePlaceSourceDetailsCallback);
                 }
             };
 
-    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
+    private ResultCallback<PlaceBuffer> mUpdatePlaceSourceDetailsCallback
+            = new ResultCallback<PlaceBuffer>() {
+        @Override
+        public void onResult(PlaceBuffer places) {
+            if (!places.getStatus().isSuccess()) {
+                // Request did not complete successfully
+                Log.e(PLACETAG, "Place query did not complete. Error: " + places.getStatus().toString());
+
+                return;
+            }
+            final Place place = places.get(0);
+            //Set LatLng object for current location
+            sourceLatLng = place.getLatLng();
+            Log.d("Source LatLng", sourceLatLng.toString());
+            if (destinationLatLng != null) {
+                getLyftApiResponse();
+                getPrices();
+                getTimes();
+            }
+            closeKeyboard();
+            unFocusTextView();
+        }
+    };
+
+    /**
+     * Listener that handles selections from suggestions from the AutoCompleteTextView that
+     * displays Place suggestions.
+     * Gets the place id of the selected item and issues a request to the Places Geo Data API
+     * to retrieve more details about the place.
+     *
+     * @see com.google.android.gms.location.places.GeoDataApi#getPlaceById(com.google.android.gms.common.api.GoogleApiClient,
+     * String...)
+     */
+    private AdapterView.OnItemClickListener mAutocompleteDestinationClickListener =
+            new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    final PlaceAutocompleteAdapter.PlaceAutocomplete item = placeAutocompleteAdapter.getItem(position);
+                    final String placeId = String.valueOf(item.placeId);
+                    Log.i(PLACETAG, "Autocomplete item selected: " + item.description);
+
+                    /*
+                     Issue a request to the Places Geo Data API to retrieve a Place object with additional
+                      details about the place.
+                    */
+                    PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+                            .getPlaceById(googleApiClient, placeId);
+                    placeResult.setResultCallback(mUpdatePlaceDestinationDetailsCallback);
+                }
+            };
+
+    private ResultCallback<PlaceBuffer> mUpdatePlaceDestinationDetailsCallback
             = new ResultCallback<PlaceBuffer>() {
         @Override
         public void onResult(PlaceBuffer places) {
@@ -801,9 +855,15 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     .add(perMinuteFee.multiply(new BigDecimal(durationInMinutes)))
                     .add(trustSafetyFee);
 
+            if (finalPrice.intValue() < 6) {
+                finalPrice = new BigDecimal(6);
+            }
+
             Log.d("Final Price", finalPrice.toString());
             //TODO Improve price formatter
             lyftPriceValue.setText("$" + finalPrice.setScale(0, RoundingMode.HALF_UP));
+            lyftPriceLabel.setPadding(25, 60, 2, 0);
+            lyftTimeLabel.setPadding(45, 60, 2, 0);
         }
     }
 

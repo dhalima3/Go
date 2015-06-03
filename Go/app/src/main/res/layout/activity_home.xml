@@ -226,7 +226,7 @@
                 android:textSize="@dimen/abc_text_size_medium_material"
                 android:paddingTop="20sp"
                 android:paddingRight="2sp"
-                android:paddingLeft="15sp"/>
+                android:paddingLeft="35sp"/>
 
             <EditText
                 android:id="@+id/lyftPriceValue"
@@ -243,7 +243,7 @@
                 android:textSize="@dimen/abc_text_size_medium_material"
                 android:paddingTop="20sp"
                 android:paddingRight="5sp"
-                android:paddingLeft="25sp"/>
+                android:paddingLeft="45sp"/>
 
             <EditText
                 android:id="@+id/lyftTimeValue"
