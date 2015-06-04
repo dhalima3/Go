@@ -202,7 +202,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             }
         });
 
-        fastestButton = (Button) findViewById(R.id.fastestButton);
+        fastestButton = (Button) findViewById(R.id.closestButton);
         fastestButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String lyftPrice = lyftPriceValue.getText().toString().substring(1);

@@ -4,13 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:layout_marginTop="90dp"
-        android:id="@+id/map"
-        tools:context=".Home"
-        android:name="com.google.android.gms.maps.SupportMapFragment"/>
+        android:layout_height="320dp"
+        android:orientation="vertical">
+
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="320dp"
+            android:layout_marginTop="90dp"
+            android:id="@+id/map"
+            tools:context=".Home"
+            android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:focusable="true"
@@ -44,6 +51,7 @@
 
     </LinearLayout>
 
+
     <AutoCompleteTextView
         android:id="@+id/pickUpEdit"
         style="@style/PlaceView"
@@ -53,7 +61,7 @@
         android:textSize="@dimen/abc_text_size_medium_material"
         android:gravity="top"/>
 
-    //TODO put these Autocomplete styles in styles.xml
+    <!--TODO put these Autocomplete styles in styles.xml and maybe put in linear layout-->
     <AutoCompleteTextView
         android:id="@+id/dropEdit"
         style="@style/PlaceView"
@@ -63,15 +71,15 @@
         android:textSize="@dimen/abc_text_size_medium_material"
         android:layout_marginTop="40dp"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="55dp"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
-        android:layout_gravity="bottom">
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="55dp"-->
+        <!--android:paddingLeft="40dp"-->
+        <!--android:paddingRight="40dp"-->
+        <!--android:layout_gravity="bottom">-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
     <!--<LinearLayout-->
     <!--android:layout_width="match_parent"-->
@@ -124,9 +132,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:layout_gravity="right|bottom">
+        android:layout_gravity="right|bottom"
+        android:orientation="vertical">
 
-        <TableRow
+        <LinearLayout
             android:id="@+id/buttonRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -135,12 +144,14 @@
                 android:id="@+id/cheapestButton"
                 style="@style/TimeButton"
                 android:text="Cheapest"/>
-            <Button
-                android:id="@+id/fastestButton"
-                style="@style/TimeButton"
-                android:text="Fastest"/>
 
-        </TableRow>
+            <Button
+                android:id="@+id/closestButton"
+                style="@style/TimeButton"
+                android:text="Closest"/>
+
+        </LinearLayout>
+
         <TableRow
             android:id="@+id/uberRow"
             android:layout_width="match_parent"
