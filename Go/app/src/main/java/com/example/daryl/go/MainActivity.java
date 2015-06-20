@@ -128,7 +128,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
         setContentView(R.layout.activity_home);
 
-        sourceAutocomplete = (AutoCompleteTextView) findViewById(R.id.pickUpEdit);
         markerText = (TextView) findViewById(R.id.locationMarkertext);
 
         uberPriceLabel = (TextView) findViewById(R.id.uberPriceLabel);
@@ -141,6 +140,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         lyftPriceValue = (EditText) findViewById(R.id.lyftPriceValue);
         lyftTimeValue = (EditText) findViewById(R.id.lyftTimeValue);
 
+        //Make edittext not editable
         uberPriceValue.setKeyListener(null);
         uberTimeValue.setKeyListener(null);
         lyftPriceValue.setKeyListener(null);
@@ -181,7 +181,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 String[] uberPriceArray = uberPrice.split("-");
                 int uberLowPrice = Integer.parseInt(uberPriceArray[0].substring(1));
                 int uberHighPrice = Integer.parseInt(uberPriceArray[1]);
-                double uberMedianPrice = (uberLowPrice+uberHighPrice)/2;
+                double uberMedianPrice = (uberLowPrice + uberHighPrice) / 2;
                 Log.d("Lyft Price", lyftPrice);
                 Log.d("Uber Low Price", Integer.toString(uberLowPrice));
                 Log.d("Uber High Price", Integer.toString(uberHighPrice));
@@ -194,14 +194,11 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
                 if (Integer.parseInt(lyftPrice) < uberMedianPrice) {
                     launchLyftApp();
-                }
-                else if (Integer.parseInt(lyftPrice) > uberMedianPrice) {
+                } else if (Integer.parseInt(lyftPrice) > uberMedianPrice) {
                     launchUberApp();
-                }
-                else if (Integer.parseInt(lyftPrice) == uberMedianPrice && lyftTime < uberTime) {
+                } else if (Integer.parseInt(lyftPrice) == uberMedianPrice && lyftTime < uberTime) {
                     launchLyftApp();
-                }
-                else if (Integer.parseInt(lyftPrice) == uberMedianPrice && lyftTime > uberTime) {
+                } else if (Integer.parseInt(lyftPrice) == uberMedianPrice && lyftTime > uberTime) {
                     launchUberApp();
                 }
             }
@@ -255,17 +252,40 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         }
 
         destinationAutocomplete = (AutoCompleteTextView) findViewById(R.id.dropEdit);
-        destinationAutocomplete.setSelectAllOnFocus(true);
-        destinationAutocomplete.setOnItemClickListener(mAutocompleteDestinationClickListener);
-        //TODO Change latLngBounds to update with current location
+        sourceAutocomplete = (AutoCompleteTextView) findViewById(R.id.pickUpEdit);
+
+//      TODO Change latLngBounds to update with current location
 //        LatLngBounds latLngBounds =  new LatLngBounds(new LatLng(28.70, -127.50), new LatLng(48.85, -55.90));
 //        LatLngBounds latLngBounds = googleMap.getProjection().getVisibleRegion().latLngBounds;
-          LatLngBounds atlantaLatLngBounds = new LatLngBounds(new LatLng(33.294746, -84.928851), new LatLng(34.435028, -83.604998));
+        LatLngBounds atlantaLatLngBounds = new LatLngBounds(new LatLng(33.294746, -84.928851), new LatLng(34.435028, -83.604998));
         placeAutocompleteAdapter = new PlaceAutocompleteAdapter(this, android.R.layout.simple_list_item_1, atlantaLatLngBounds, null);
-        destinationAutocomplete.setAdapter(placeAutocompleteAdapter);
 
+        sourceAutocomplete.setSelectAllOnFocus(true);
         sourceAutocomplete.setOnItemClickListener(mAutocompleteSourceClickListener);
         sourceAutocomplete.setAdapter(placeAutocompleteAdapter);
+        // Showing edittext to show from the start
+        sourceAutocomplete.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus == false) {  // lost focus
+                    sourceAutocomplete.setSelection(0, 0);
+                }
+            }
+        });
+
+        destinationAutocomplete.setSelectAllOnFocus(true);
+        destinationAutocomplete.setOnItemClickListener(mAutocompleteDestinationClickListener);
+        destinationAutocomplete.setAdapter(placeAutocompleteAdapter);
+        // Showing edittext to show from the start
+        destinationAutocomplete.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus == false) {  // lost focus
+                    destinationAutocomplete.setSelection(0, 0);
+                }
+            }
+        });
+
     }
 
     @Override
@@ -312,7 +332,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 if (location != null) {
                     onLocationChanged(location);
                 }
-                locationManager.requestLocationUpdates(provider, 120000, 0, this);
+//                locationManager.requestLocationUpdates(provider, 120000, 0, this);
             }
         }
     }
