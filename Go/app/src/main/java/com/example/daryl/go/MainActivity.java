@@ -176,30 +176,35 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         cheapestButton = (Button) findViewById(R.id.cheapestButton);
         cheapestButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String lyftPrice = lyftPriceValue.getText().toString().substring(1);
-                String uberPrice = uberPriceValue.getText().toString();
-                String[] uberPriceArray = uberPrice.split("-");
-                int uberLowPrice = Integer.parseInt(uberPriceArray[0].substring(1));
-                int uberHighPrice = Integer.parseInt(uberPriceArray[1]);
-                double uberMedianPrice = (uberLowPrice + uberHighPrice) / 2;
-                Log.d("Lyft Price", lyftPrice);
-                Log.d("Uber Low Price", Integer.toString(uberLowPrice));
-                Log.d("Uber High Price", Integer.toString(uberHighPrice));
-                Log.d("Uber Median Price", Double.toString(uberMedianPrice));
+                //TODO add google maps address validator
+                if (sourceAutocomplete.getText().toString().length() > 10 && destinationAutocomplete.getText().toString().length() > 10) {
+                    String lyftPrice = lyftPriceValue.getText().toString().substring(1);
+                    String uberPrice = uberPriceValue.getText().toString();
+                    String[] uberPriceArray = uberPrice.split("-");
+                    int uberLowPrice = Integer.parseInt(uberPriceArray[0].substring(1));
+                    int uberHighPrice = Integer.parseInt(uberPriceArray[1]);
+                    double uberMedianPrice = (uberLowPrice + uberHighPrice) / 2;
+                    Log.d("Lyft Price", lyftPrice);
+                    Log.d("Uber Low Price", Integer.toString(uberLowPrice));
+                    Log.d("Uber High Price", Integer.toString(uberHighPrice));
+                    Log.d("Uber Median Price", Double.toString(uberMedianPrice));
 
-                String lyftTimeString = lyftTimeValue.getText().toString().split(" ")[0];
-                String uberTimeString = uberTimeValue.getText().toString().split(" ")[0];
-                int lyftTime = Integer.parseInt(lyftTimeString);
-                int uberTime = Integer.parseInt(uberTimeString);
+                    String lyftTimeString = lyftTimeValue.getText().toString().split(" ")[0];
+                    String uberTimeString = uberTimeValue.getText().toString().split(" ")[0];
+                    int lyftTime = Integer.parseInt(lyftTimeString);
+                    int uberTime = Integer.parseInt(uberTimeString);
 
-                if (Integer.parseInt(lyftPrice) < uberMedianPrice) {
-                    launchLyftApp();
-                } else if (Integer.parseInt(lyftPrice) > uberMedianPrice) {
-                    launchUberApp();
-                } else if (Integer.parseInt(lyftPrice) == uberMedianPrice && lyftTime < uberTime) {
-                    launchLyftApp();
-                } else if (Integer.parseInt(lyftPrice) == uberMedianPrice && lyftTime > uberTime) {
-                    launchUberApp();
+                    if (Integer.parseInt(lyftPrice) < uberMedianPrice) {
+                        launchLyftApp();
+                    } else if (Integer.parseInt(lyftPrice) > uberMedianPrice) {
+                        launchUberApp();
+                    } else if (Integer.parseInt(lyftPrice) == uberMedianPrice && lyftTime < uberTime) {
+                        launchLyftApp();
+                    } else if (Integer.parseInt(lyftPrice) == uberMedianPrice && lyftTime > uberTime) {
+                        launchUberApp();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please enter a valid pickup/dropoff address", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -207,40 +212,42 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         fastestButton = (Button) findViewById(R.id.closestButton);
         fastestButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String lyftPrice = lyftPriceValue.getText().toString().substring(1);
-                String uberPrice = uberPriceValue.getText().toString();
-                String[] uberPriceArray = uberPrice.split("-");
-                int uberLowPrice = Integer.parseInt(uberPriceArray[0].substring(1));
+                //TODO add google maps address validator
+                if (sourceAutocomplete.getText().toString().length() > 10 && destinationAutocomplete.getText().toString().length() > 10) {
+                    String lyftPrice = lyftPriceValue.getText().toString().substring(1);
+                    String uberPrice = uberPriceValue.getText().toString();
+                    String[] uberPriceArray = uberPrice.split("-");
+                    int uberLowPrice = Integer.parseInt(uberPriceArray[0].substring(1));
 
-                //TODO Checking if there is an uber High price, code review
-                int uberHighPrice = uberLowPrice;
+                    //TODO Checking if there is an uber High price, code review
+                    int uberHighPrice = uberLowPrice;
 
-                if (uberPriceArray.length > 1) {
-                    Integer.parseInt(uberPriceArray[1]);
-                }
+                    if (uberPriceArray.length > 1) {
+                        Integer.parseInt(uberPriceArray[1]);
+                    }
 
-                double uberMedianPrice = (uberLowPrice+uberHighPrice)/2;
-                Log.d("Lyft Price", lyftPrice);
-                Log.d("Uber Low Price", Integer.toString(uberLowPrice));
-                Log.d("Uber High Price", Integer.toString(uberHighPrice));
-                Log.d("Uber Median Price", Double.toString(uberMedianPrice));
+                    double uberMedianPrice = (uberLowPrice + uberHighPrice) / 2;
+                    Log.d("Lyft Price", lyftPrice);
+                    Log.d("Uber Low Price", Integer.toString(uberLowPrice));
+                    Log.d("Uber High Price", Integer.toString(uberHighPrice));
+                    Log.d("Uber Median Price", Double.toString(uberMedianPrice));
 
-                String lyftTimeString = lyftTimeValue.getText().toString().split(" ")[0];
-                String uberTimeString = uberTimeValue.getText().toString().split(" ")[0];
-                int lyftTime = Integer.parseInt(lyftTimeString);
-                int uberTime = Integer.parseInt(uberTimeString);
+                    String lyftTimeString = lyftTimeValue.getText().toString().split(" ")[0];
+                    String uberTimeString = uberTimeValue.getText().toString().split(" ")[0];
+                    int lyftTime = Integer.parseInt(lyftTimeString);
+                    int uberTime = Integer.parseInt(uberTimeString);
 
-                if (lyftTime < uberTime) {
-                    launchLyftApp();
-                }
-                else if (lyftTime > uberTime) {
-                    launchUberApp();
-                }
-                else if (lyftTime == uberTime && Integer.parseInt(lyftPrice) < uberMedianPrice) {
-                    launchLyftApp();
-                }
-                else if (lyftTime == uberTime && Integer.parseInt(lyftPrice) > uberMedianPrice) {
-                    launchUberApp();
+                    if (lyftTime < uberTime) {
+                        launchLyftApp();
+                    } else if (lyftTime > uberTime) {
+                        launchUberApp();
+                    } else if (lyftTime == uberTime && Integer.parseInt(lyftPrice) < uberMedianPrice) {
+                        launchLyftApp();
+                    } else if (lyftTime == uberTime && Integer.parseInt(lyftPrice) > uberMedianPrice) {
+                        launchUberApp();
+                    }
+                } else {
+                   Toast.makeText(getApplicationContext(), "Please enter a valid pickup/dropoff address", Toast.LENGTH_SHORT).show();
                 }
             }
         });
