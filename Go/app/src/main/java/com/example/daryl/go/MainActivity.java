@@ -141,6 +141,11 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         lyftPriceValue = (EditText) findViewById(R.id.lyftPriceValue);
         lyftTimeValue = (EditText) findViewById(R.id.lyftTimeValue);
 
+        uberPriceValue.setKeyListener(null);
+        uberTimeValue.setKeyListener(null);
+        lyftPriceValue.setKeyListener(null);
+        lyftTimeValue.setKeyListener(null);
+
         uberImageButton = (ImageButton) findViewById(R.id.uberLogo);
         lyftImageButton = (ImageButton) findViewById(R.id.lyftLogo);
         uberImageButton.setImageResource(R.drawable.uberlogo);
