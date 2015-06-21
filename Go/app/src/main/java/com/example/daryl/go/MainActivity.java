@@ -270,6 +270,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         sourceAutocomplete.setSelectAllOnFocus(true);
         sourceAutocomplete.setOnItemClickListener(mAutocompleteSourceClickListener);
         sourceAutocomplete.setAdapter(placeAutocompleteAdapter);
+
         // Showing edittext to show from the start
         sourceAutocomplete.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -350,6 +351,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     }
 
     public void unFocusTextView() {
+        sourceAutocomplete.clearFocus();
         destinationAutocomplete.clearFocus();
     }
 
@@ -640,8 +642,14 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 getPrices();
                 getTimes();
             }
+            //TODO Update next 4 lines to use onLocationChanged() method
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(sourceLatLng));
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+
+            setUpMarker();
             closeKeyboard();
             unFocusTextView();
+
         }
     };
 
