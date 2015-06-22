@@ -4,134 +4,90 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="320dp"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <fragment
             android:layout_width="match_parent"
-            android:layout_height="320dp"
-            android:layout_marginTop="90dp"
+            android:layout_height="370dp"
             android:id="@+id/map"
             tools:context=".Home"
             android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:id="@+id/locationMarker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="55dp"
-        android:gravity="center"
-        android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/locationMarkertext"
+        <LinearLayout
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:id="@+id/locationMarker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_corner_map"
+            android:layout_gravity="center"
+            android:layout_marginBottom="100dp"
             android:gravity="center"
-            android:minWidth="180dp"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:text=" Set your Location "
-            android:textColor="@android:color/white" />
+            android:orientation="vertical" >
 
-        <ImageView
-            android:id="@+id/imageView1"
-            android:paddingTop="2dp"
-            android:layout_width="30dp"
-            android:layout_height="35dp"
-            android:src="@drawable/map_marker"/>
+            <TextView
+                android:id="@+id/locationMarkertext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_corner_map"
+                android:gravity="center"
+                android:minWidth="180dp"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:text=" Set your Location "
+                android:textColor="@android:color/white" />
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/imageView1"
+                android:paddingTop="2dp"
+                android:layout_width="30dp"
+                android:layout_height="35dp"
+                android:src="@drawable/map_marker"/>
 
+        </LinearLayout>
 
-    <AutoCompleteTextView
-        android:id="@+id/pickUpEdit"
-        style="@style/PlaceView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter pickup location"
-        android:textSize="@dimen/abc_text_size_medium_material"
-        android:gravity="top"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="bottom">
 
-    <!--TODO put these Autocomplete styles in styles.xml and maybe put in linear layout-->
-    <AutoCompleteTextView
-        android:id="@+id/dropEdit"
-        style="@style/PlaceView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter dropoff location"
-        android:textSize="@dimen/abc_text_size_medium_material"
-        android:layout_marginTop="40dp"/>
+            <AutoCompleteTextView
+                android:id="@+id/pickUpEdit"
+                style="@style/PlaceView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter pickup location"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:gravity="top"/>
 
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="55dp"-->
-        <!--android:paddingLeft="40dp"-->
-        <!--android:paddingRight="40dp"-->
-        <!--android:layout_gravity="bottom">-->
+            <!--TODO put these Autocomplete styles in styles.xml and maybe put in linear layout-->
+            <AutoCompleteTextView
+                android:id="@+id/dropEdit"
+                style="@style/PlaceView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter dropoff location"
+                android:textSize="@dimen/abc_text_size_medium_material"/>
 
-    <!--</LinearLayout>-->
+            <com.dd.processbutton.iml.ActionProcessButton
+                android:id="@+id/btnSignIn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Touch to go"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"/>
 
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginBottom="55dp"-->
-    <!--android:paddingLeft="40dp"-->
-    <!--android:paddingRight="40dp"-->
-    <!--android:layout_gravity="bottom">-->
+        </LinearLayout>
 
-    <!--<Button-->
-    <!--android:id="@+id/now"-->
-    <!--style="@style/TimeButton"-->
-    <!--android:text="NOW"/>-->
-
-    <!--<View-->
-    <!--android:layout_width="5dp"-->
-    <!--android:layout_height="1dp"></View>-->
-
-    <!--<Button-->
-    <!--android:id="@+id/later"-->
-    <!--style="@style/TimeButton"-->
-    <!--android:text="LATER"/>-->
-
-    <!--</LinearLayout>-->
+    </FrameLayout>
 
 
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="horizontal"-->
-    <!--android:layout_gravity="bottom"-->
-    <!--android:layout_marginLeft="15dp"-->
-    <!--android:id="@+id/carTypeLayout">-->
-    <!--<TextView-->
-    <!--android:id="@+id/hatchbackView"-->
-    <!--style="@style/CarStyle"-->
-    <!--android:text="Hatchback"/>-->
-    <!--<TextView-->
-    <!--android:id="@+id/sedanView"-->
-    <!--style="@style/CarStyle"-->
-    <!--android:text="Sedan"/>-->
-    <!--<TextView-->
-    <!--android:id="@+id/suvView"-->
-    <!--style="@style/CarStyle"-->
-    <!--android:text="SUV"/>-->
-
-    <!--</LinearLayout>-->
-
+    <!--android:layout_marginBottom="10dp"-->
     <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_width="0px"
+        android:layout_height="0px"
         android:layout_gravity="right|bottom"
         android:orientation="vertical">
 
@@ -268,6 +224,5 @@
         </TableRow>
 
     </TableLayout>
-
 
 </FrameLayout>
