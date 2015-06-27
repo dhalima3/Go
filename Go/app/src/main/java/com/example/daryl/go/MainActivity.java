@@ -104,11 +104,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private Intent uberLaunchIntent;
     private Intent lyftLaunchIntent;
 
-//    TODO Implement or delete progress bar code
-//    private ProgressView uberPriceProgress;
-//    private RelativeLayout uberPriceView;
-//    private ProgressView lyftProgress;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
