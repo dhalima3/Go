@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +56,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -106,6 +108,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private Intent lyftLaunchIntent;
 
     private ActionProcessButton mainGoButton;
+    private FrameLayout mapFrameLayout;
+    private SlidingUpPanelLayout slidingLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +140,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         uberImageButton.setImageResource(R.drawable.uberlogo);
         lyftImageButton.setImageResource(R.drawable.lyftlogo);
 
+        slidingLayout = (SlidingUpPanelLayout) findViewById(R.id.slidingLayout);
         mainGoButton = (ActionProcessButton) findViewById(R.id.mainGoButton);
+        mapFrameLayout = (FrameLayout) findViewById(R.id.mapFrameLayout);
 
         uberLaunchIntent = getPackageManager().getLaunchIntentForPackage("com.ubercab");
         lyftLaunchIntent = getPackageManager().getLaunchIntentForPackage("me.lyft.android");
@@ -233,6 +239,60 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 } else {
                    Toast.makeText(getApplicationContext(), "Please enter a valid pickup/dropoff address", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        slidingLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View view, float v) {
+
+            }
+
+            @Override
+            public void onPanelCollapsed(View view) {
+
+            }
+
+            @Override
+            public void onPanelExpanded(View view) {
+                mapFrameLayout.setClickable(true);
+                mapFrameLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    }
+                });
+
+                slidingLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    }
+                });
+            }
+
+            @Override
+            public void onPanelAnchored(View view) {
+
+            }
+
+            @Override
+            public void onPanelHidden(View view) {
+
+            }
+        });
+
+        mapFrameLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            }
+        });
+
+        slidingLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             }
         });
 
@@ -512,7 +572,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     public void success(TimeEstimateList timeEstimateList, retrofit.client.Response response) {
                         TimeEstimate uberX = timeEstimateList.getTimes().get(0);
                         double uberXTimeEstimate = (double) uberX.getEstimate();
-                        String uberXTimeInMinutes = Math.round(uberXTimeEstimate/60) + " min.";
+                        String uberXTimeInMinutes = Math.round(uberXTimeEstimate / 60) + " min.";
                         uberTimeValue.setText(String.valueOf(uberXTimeInMinutes));
                     }
                 });
@@ -547,6 +607,11 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         final float scale = getResources().getDisplayMetrics().density;
         int px = (int) (dp * scale + 0.5f);
         return px;
+    }
+
+    //TODO Remove
+    public void hidePanel() {
+        slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
     }
 
     @Override
