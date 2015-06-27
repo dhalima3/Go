@@ -88,10 +88,10 @@
         android:orientation="vertical">
 
         <com.dd.processbutton.iml.ActionProcessButton
-            android:id="@+id/btnSignIn"
+            android:id="@+id/mainGoButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Please Enter Valid Locations"
+            android:text="Please Enter Valid Addresses"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             custom:pb_colorComplete="@color/green_complete"

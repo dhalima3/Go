@@ -31,6 +31,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.dd.processbutton.iml.ActionProcessButton;
 import com.example.daryl.go.helpers.Money;
 import com.example.daryl.go.helpers.PlaceAutocompleteAdapter;
 import com.example.daryl.go.helpers.Secrets;
@@ -104,6 +105,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private Intent uberLaunchIntent;
     private Intent lyftLaunchIntent;
 
+    private ActionProcessButton mainGoButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,11 +136,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         uberImageButton.setImageResource(R.drawable.uberlogo);
         lyftImageButton.setImageResource(R.drawable.lyftlogo);
 
+        mainGoButton = (ActionProcessButton) findViewById(R.id.mainGoButton);
+
         uberLaunchIntent = getPackageManager().getLaunchIntentForPackage("com.ubercab");
         lyftLaunchIntent = getPackageManager().getLaunchIntentForPackage("me.lyft.android");
-
-//        uberPriceProgress = (ProgressView) findViewById(R.id.uberPriceProgress);
-//        uberPriceView = (RelativeLayout) findViewById(R.id.uberPriceView);
 
         uberImageButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -612,7 +614,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             if (!places.getStatus().isSuccess()) {
                 // Request did not complete successfully
                 Log.e(PLACETAG, "Place query did not complete. Error: " + places.getStatus().toString());
-
+                mainGoButton.setProgress(-1);
                 return;
             }
             final Place place = places.get(0);
@@ -620,9 +622,11 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             sourceLatLng = place.getLatLng();
             Log.d("Source LatLng", sourceLatLng.toString());
             if (destinationLatLng != null) {
+                mainGoButton.setProgress(1);
                 getLyftApiResponse();
                 getPrices();
                 getTimes();
+                mainGoButton.setProgress(100);
             }
             //TODO Update next 4 lines to use onLocationChanged() method
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(sourceLatLng));
@@ -670,9 +674,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             if (!places.getStatus().isSuccess()) {
                 // Request did not complete successfully
                 Log.e(PLACETAG, "Place query did not complete. Error: " + places.getStatus().toString());
-
+                mainGoButton.setProgress(-1);
                 return;
             }
+            mainGoButton.setProgress(1);
             final Place place = places.get(0);
             //Set LatLng object for current location
             destinationLatLng = place.getLatLng();
@@ -682,6 +687,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             getTimes();
             closeKeyboard();
             unFocusTextView();
+            mainGoButton.setProgress(100);
         }
     };
 
@@ -856,9 +862,11 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 sourceAutocomplete.setText(addressMarkerList.get(0).getAddressLine(0) + " " + addressMarkerList.get(0).getAddressLine(1) + " ");
                 sourceLatLng = new LatLng(latitude, longitude);
                 if (destinationLatLng != null) {
+                    mainGoButton.setProgress(1);
                     getLyftApiResponse();
                     getPrices();
                     getTimes();
+                    mainGoButton.setProgress(100);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
