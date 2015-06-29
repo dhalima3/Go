@@ -11,6 +11,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -194,7 +195,14 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                         launchUberApp();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "Please enter a valid pickup/dropoff address", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(mapFrameLayout, "Please enter a valid pickup/dropoff address", Snackbar.LENGTH_SHORT)
+                            .setAction("Dismiss", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                }
+                            })
+                            .show();
                 }
             }
         });
@@ -237,7 +245,14 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                         launchUberApp();
                     }
                 } else {
-                   Toast.makeText(getApplicationContext(), "Please enter a valid pickup/dropoff address", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(mapFrameLayout, "Please enter a valid pickup/dropoff address", Snackbar.LENGTH_SHORT)
+                            .setAction("Dismiss", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                }
+                            })
+                            .show();
                 }
             }
         });
@@ -587,9 +602,14 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 + connectionResult.getErrorCode());
 
         // TODO(Developer): Check error code and notify the user of error state and resolution.
-        Toast.makeText(this,
-                "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
-                Toast.LENGTH_SHORT).show();
+        Snackbar.make(mapFrameLayout, "Could not connect to Google API Client: Error", Snackbar.LENGTH_SHORT)
+                .setAction("Undo", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                })
+                .show();
 
         // Disable API access in the adapter because the client was not initialised correctly.
         placeAutocompleteAdapter.setGoogleApiClient(null);
