@@ -400,6 +400,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     }
 
     public void getLyftApiResponse(){
+        mainGoButton.setProgress(1);
         StringBuilder urlBuilder = new StringBuilder("http://getlassu.com/api/2/lyft?")
                 .append("originLat=" + sourceLatLng.latitude)
                 .append("&originLng=" + sourceLatLng.longitude);
@@ -550,13 +551,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 new UberCallback<PriceEstimateList>() {
                     @Override
                     public void success(PriceEstimateList priceEstimateList, retrofit.client.Response response) {
-//                        uberPriceView.setVisibility(View.GONE);
-//                        uberPriceProgress.start();
                         PriceEstimate uberX = priceEstimateList.getPrices().get(0);
                         String uberXPriceEstimate = uberX.getEstimate();
                         uberPriceValue.setText(uberXPriceEstimate);
-//                        uberPriceProgress.stop();
-//                        uberPriceView.setVisibility(View.VISIBLE);
                         uberPriceLabel.setPadding(dpToPixel(15), dpToPixel(20), dpToPixel(2), dpToPixel(0));
                         uberTimeLabel.setPadding(dpToPixel(20), dpToPixel(20), dpToPixel(2), dpToPixel(0));
                     }
@@ -574,6 +571,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                         double uberXTimeEstimate = (double) uberX.getEstimate();
                         String uberXTimeInMinutes = Math.round(uberXTimeEstimate / 60) + " min.";
                         uberTimeValue.setText(String.valueOf(uberXTimeInMinutes));
+                        mainGoButton.setProgress(100);
                     }
                 });
     }
@@ -687,11 +685,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             sourceLatLng = place.getLatLng();
             Log.d("Source LatLng", sourceLatLng.toString());
             if (destinationLatLng != null) {
-                mainGoButton.setProgress(1);
                 getLyftApiResponse();
                 getPrices();
                 getTimes();
-                mainGoButton.setProgress(100);
             }
             //TODO Update next 4 lines to use onLocationChanged() method
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(sourceLatLng));
@@ -742,7 +738,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 mainGoButton.setProgress(-1);
                 return;
             }
-            mainGoButton.setProgress(1);
             final Place place = places.get(0);
             //Set LatLng object for current location
             destinationLatLng = place.getLatLng();
@@ -752,7 +747,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             getTimes();
             closeKeyboard();
             unFocusTextView();
-            mainGoButton.setProgress(100);
         }
     };
 
@@ -927,11 +921,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 sourceAutocomplete.setText(addressMarkerList.get(0).getAddressLine(0) + " " + addressMarkerList.get(0).getAddressLine(1) + " ");
                 sourceLatLng = new LatLng(latitude, longitude);
                 if (destinationLatLng != null) {
-                    mainGoButton.setProgress(1);
                     getLyftApiResponse();
                     getPrices();
                     getTimes();
-                    mainGoButton.setProgress(100);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
