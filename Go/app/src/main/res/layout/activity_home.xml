@@ -226,15 +226,36 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <Button
+            <!--<Button-->
+                <!--android:id="@+id/cheapestButton"-->
+                <!--style="@style/TimeButton"-->
+                <!--android:text="Cheapest"/>-->
+
+            <com.dd.processbutton.iml.ActionProcessButton
                 android:id="@+id/cheapestButton"
                 style="@style/TimeButton"
-                android:text="Cheapest"/>
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cheapest"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                custom:pb_colorNormal="#FF03A9F4"/>
 
-            <Button
+            <com.dd.processbutton.iml.ActionProcessButton
                 android:id="@+id/closestButton"
                 style="@style/TimeButton"
-                android:text="Closest"/>
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Closest"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                custom:pb_colorNormal="#FF03A9F4"/>
+            <!--<Button-->
+                <!--android:id="@+id/closestButton"-->
+                <!--style="@style/TimeButton"-->
+                <!--android:text="Closest"/>-->
 
         </LinearLayout>
 
