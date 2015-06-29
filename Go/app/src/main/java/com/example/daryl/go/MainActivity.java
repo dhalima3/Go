@@ -242,57 +242,12 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             }
         });
 
-        slidingLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+        //Allow panel to be collapsed when clicking outside panel area
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
-            public void onPanelSlide(View view, float v) {
-
-            }
-
-            @Override
-            public void onPanelCollapsed(View view) {
-
-            }
-
-            @Override
-            public void onPanelExpanded(View view) {
-                mapFrameLayout.setClickable(true);
-                mapFrameLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                    }
-                });
-
-                slidingLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                    }
-                });
-            }
-
-            @Override
-            public void onPanelAnchored(View view) {
-
-            }
-
-            @Override
-            public void onPanelHidden(View view) {
-
-            }
-        });
-
-        mapFrameLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            public void onMapClick(LatLng latLng) {
                 slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-            }
-        });
-
-        slidingLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                mainGoButton.setProgress(0);
             }
         });
 
@@ -571,7 +526,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                         double uberXTimeEstimate = (double) uberX.getEstimate();
                         String uberXTimeInMinutes = Math.round(uberXTimeEstimate / 60) + " min.";
                         uberTimeValue.setText(String.valueOf(uberXTimeInMinutes));
-                        mainGoButton.setProgress(100);
                     }
                 });
     }
@@ -864,13 +818,8 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             distanceInMiles = distance/1000f/1.609344f;
             durationInMinutes = duration/60L;
 
-//            float[] distanceArray = new float[1];
             BigDecimal finalPrice;
-//
-//            Location.distanceBetween(sourceLatLng.latitude, sourceLatLng.longitude,
-//                    destinationLatLng.latitude, destinationLatLng.longitude, distanceArray);
-//
-//            float distance = distanceArray[0];
+
             Log.d("Distance Lyft Price", Float.toString(distanceInMiles));
             Log.d("Duration Lyft Price", Long.toString(durationInMinutes));
             Log.d("Pick up fee", pickupFee.toString());
@@ -892,6 +841,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             lyftPriceValue.setText("$" + finalPrice.setScale(0, RoundingMode.HALF_UP));
             lyftPriceLabel.setPadding(dpToPixel(15), dpToPixel(20), dpToPixel(2), dpToPixel(0));
             lyftTimeLabel.setPadding(dpToPixel(20), dpToPixel(20), dpToPixel(2), dpToPixel(0));
+            mainGoButton.setProgress(100);
         }
     }
 
