@@ -262,7 +262,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             @Override
             public void onMapClick(LatLng latLng) {
                 slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-                mainGoButton.setProgress(0);
             }
         });
 
