@@ -100,7 +100,7 @@
             android:textColor="@android:color/white"
             android:textSize="18sp"
             custom:pb_colorComplete="@color/green_complete"
-            custom:pb_colorNormal="#FF03A9F4"
+            custom:pb_colorNormal="@android:color/transparent"
             custom:pb_colorError="@color/red_error"
             custom:pb_textComplete="Swipe Up to Go"
             custom:pb_textProgress="Loading"
