@@ -172,13 +172,13 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     String lyftPrice = lyftPriceValue.getText().toString().substring(1);
                     String uberPrice = uberPriceValue.getText().toString();
                     String[] uberPriceArray = uberPrice.split("-");
-                    int uberLowPrice = Integer.parseInt(uberPriceArray[0].substring(1));
-                    int uberHighPrice = Integer.parseInt(uberPriceArray[1]);
-                    double uberMedianPrice = (uberLowPrice + uberHighPrice) / 2;
+                    double uberMedianPrice = Integer.parseInt(uberPriceArray[0].substring(1));
+                    if (uberPriceArray.length > 1) {
+                        int uberLowPrice = Integer.parseInt(uberPriceArray[0].substring(1));
+                        int uberHighPrice = Integer.parseInt(uberPriceArray[1]);
+                        uberMedianPrice = (uberLowPrice + uberHighPrice) / 2;
+                    }
                     Log.d("Lyft Price", lyftPrice);
-                    Log.d("Uber Low Price", Integer.toString(uberLowPrice));
-                    Log.d("Uber High Price", Integer.toString(uberHighPrice));
-                    Log.d("Uber Median Price", Double.toString(uberMedianPrice));
 
                     String lyftTimeString = lyftTimeValue.getText().toString().split(" ")[0];
                     String uberTimeString = uberTimeValue.getText().toString().split(" ")[0];
@@ -193,9 +193,19 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                         launchLyftApp();
                     } else if (Integer.parseInt(lyftPrice) == uberMedianPrice && lyftTime > uberTime) {
                         launchUberApp();
+                    } else {
+                        Snackbar.make(mapFrameLayout, "Price/distance the same for all apps. " +
+                                "Click logo to launch either app.", Snackbar.LENGTH_LONG)
+                                .setAction("Dismiss", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                    }
+                                })
+                                .show();
                     }
                 } else {
-                    Snackbar.make(mapFrameLayout, "Please enter a valid pickup/dropoff address", Snackbar.LENGTH_SHORT)
+                    Snackbar.make(mapFrameLayout, "Please enter a valid pickup/dropoff address", Snackbar.LENGTH_LONG)
                             .setAction("Dismiss", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -215,20 +225,13 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     String lyftPrice = lyftPriceValue.getText().toString().substring(1);
                     String uberPrice = uberPriceValue.getText().toString();
                     String[] uberPriceArray = uberPrice.split("-");
-                    int uberLowPrice = Integer.parseInt(uberPriceArray[0].substring(1));
-
-                    //TODO Checking if there is an uber High price, code review
-                    int uberHighPrice = uberLowPrice;
-
+                    double uberMedianPrice = Integer.parseInt(uberPriceArray[0].substring(1));
                     if (uberPriceArray.length > 1) {
-                        Integer.parseInt(uberPriceArray[1]);
+                        int uberLowPrice = Integer.parseInt(uberPriceArray[0].substring(1));
+                        int uberHighPrice = Integer.parseInt(uberPriceArray[1]);
+                        uberMedianPrice = (uberLowPrice + uberHighPrice) / 2;
                     }
-
-                    double uberMedianPrice = (uberLowPrice + uberHighPrice) / 2;
                     Log.d("Lyft Price", lyftPrice);
-                    Log.d("Uber Low Price", Integer.toString(uberLowPrice));
-                    Log.d("Uber High Price", Integer.toString(uberHighPrice));
-                    Log.d("Uber Median Price", Double.toString(uberMedianPrice));
 
                     String lyftTimeString = lyftTimeValue.getText().toString().split(" ")[0];
                     String uberTimeString = uberTimeValue.getText().toString().split(" ")[0];
@@ -243,6 +246,16 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                         launchLyftApp();
                     } else if (lyftTime == uberTime && Integer.parseInt(lyftPrice) > uberMedianPrice) {
                         launchUberApp();
+                    } else {
+                        Snackbar.make(mapFrameLayout, "Price/distance the same for all apps. " +
+                                "Click logo to launch either app.", Snackbar.LENGTH_LONG)
+                                .setAction("Dismiss", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                    }
+                                })
+                                .show();
                     }
                 } else {
                     Snackbar.make(mapFrameLayout, "Please enter a valid pickup/dropoff address", Snackbar.LENGTH_SHORT)
@@ -538,7 +551,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     public void success(TimeEstimateList timeEstimateList, retrofit.client.Response response) {
                         TimeEstimate uberX = timeEstimateList.getTimes().get(0);
                         double uberXTimeEstimate = (double) uberX.getEstimate();
-                        String uberXTimeInMinutes = Math.round(uberXTimeEstimate / 60) + " min.";
+                        String uberXTimeInMinutes = (uberXTimeEstimate < 60) ? "< 1 min." :
+                                Math.round(uberXTimeEstimate / 60) + " min.";
+
                         uberTimeValue.setText(String.valueOf(uberXTimeInMinutes));
                     }
                 });
@@ -781,7 +796,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
         @Override
         protected void onPostExecute(Long duration) {
-            String time = duration/60L + " min.";
+            String time = (duration < 60) ? "< 1 min." : duration/60L + " min.";
             lyftTimeValue.setText(time);
         }
     }
