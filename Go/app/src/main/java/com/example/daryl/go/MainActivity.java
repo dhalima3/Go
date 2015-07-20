@@ -70,6 +70,8 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
 
+import retrofit.RetrofitError;
+
 public class MainActivity extends ActionBarActivity implements LocationListener,
         GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
@@ -171,31 +173,11 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 if (sourceAutocomplete.getText().toString().length() > 10 && destinationAutocomplete.getText().toString().length() > 10) {
                     String lyftPrice = lyftPriceValue.getText().toString().substring(1);
                     String uberPrice = uberPriceValue.getText().toString();
-                    String[] uberPriceArray = uberPrice.split("-");
-                    double uberMedianPrice = Integer.parseInt(uberPriceArray[0].substring(1));
-                    if (uberPriceArray.length > 1) {
-                        int uberLowPrice = Integer.parseInt(uberPriceArray[0].substring(1));
-                        int uberHighPrice = Integer.parseInt(uberPriceArray[1]);
-                        uberMedianPrice = (uberLowPrice + uberHighPrice) / 2;
-                    }
                     Log.d("Lyft Price", lyftPrice);
-
-                    String lyftTimeString = lyftTimeValue.getText().toString().split(" ")[0];
-                    String uberTimeString = uberTimeValue.getText().toString().split(" ")[0];
-                    int lyftTime = Integer.parseInt(lyftTimeString);
-                    int uberTime = Integer.parseInt(uberTimeString);
-
-                    if (Integer.parseInt(lyftPrice) < uberMedianPrice) {
-                        launchLyftApp();
-                    } else if (Integer.parseInt(lyftPrice) > uberMedianPrice) {
-                        launchUberApp();
-                    } else if (Integer.parseInt(lyftPrice) == uberMedianPrice && lyftTime < uberTime) {
-                        launchLyftApp();
-                    } else if (Integer.parseInt(lyftPrice) == uberMedianPrice && lyftTime > uberTime) {
-                        launchUberApp();
-                    } else {
-                        Snackbar.make(mapFrameLayout, "Price/distance the same for all apps. " +
-                                "Click logo to launch either app.", Snackbar.LENGTH_LONG)
+                    Log.d("Uber Price", uberPrice);
+                    if (lyftPrice.contains("N/A") || uberPrice.contains("N/A")) {
+                        Snackbar.make(mapFrameLayout, "Invalid input.  Distance is > 100 miles",
+                                Snackbar.LENGTH_SHORT)
                                 .setAction("Dismiss", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -203,6 +185,40 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                                     }
                                 })
                                 .show();
+                    } else {
+                        String[] uberPriceArray = uberPrice.split("-");
+                        double uberMedianPrice = Integer.parseInt(uberPriceArray[0].substring(1));
+                        if (uberPriceArray.length > 1) {
+                            int uberLowPrice = Integer.parseInt(uberPriceArray[0].substring(1));
+                            int uberHighPrice = Integer.parseInt(uberPriceArray[1]);
+                            uberMedianPrice = (uberLowPrice + uberHighPrice) / 2;
+                        }
+                        Log.d("Lyft Price", lyftPrice);
+
+                        String lyftTimeString = lyftTimeValue.getText().toString().split(" ")[0];
+                        String uberTimeString = uberTimeValue.getText().toString().split(" ")[0];
+                        int lyftTime = Integer.parseInt(lyftTimeString);
+                        int uberTime = Integer.parseInt(uberTimeString);
+
+                        if (Integer.parseInt(lyftPrice) < uberMedianPrice) {
+                            launchLyftApp();
+                        } else if (Integer.parseInt(lyftPrice) > uberMedianPrice) {
+                            launchUberApp();
+                        } else if (Integer.parseInt(lyftPrice) == uberMedianPrice && lyftTime < uberTime) {
+                            launchLyftApp();
+                        } else if (Integer.parseInt(lyftPrice) == uberMedianPrice && lyftTime > uberTime) {
+                            launchUberApp();
+                        } else {
+                            Snackbar.make(mapFrameLayout, "Price/distance the same for all apps. " +
+                                    "Click logo to launch either app.", Snackbar.LENGTH_LONG)
+                                    .setAction("Dismiss", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+
+                                        }
+                                    })
+                                    .show();
+                        }
                     }
                 } else {
                     Snackbar.make(mapFrameLayout, "Please enter a valid pickup/dropoff address", Snackbar.LENGTH_LONG)
@@ -224,31 +240,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 if (sourceAutocomplete.getText().toString().length() > 10 && destinationAutocomplete.getText().toString().length() > 10) {
                     String lyftPrice = lyftPriceValue.getText().toString().substring(1);
                     String uberPrice = uberPriceValue.getText().toString();
-                    String[] uberPriceArray = uberPrice.split("-");
-                    double uberMedianPrice = Integer.parseInt(uberPriceArray[0].substring(1));
-                    if (uberPriceArray.length > 1) {
-                        int uberLowPrice = Integer.parseInt(uberPriceArray[0].substring(1));
-                        int uberHighPrice = Integer.parseInt(uberPriceArray[1]);
-                        uberMedianPrice = (uberLowPrice + uberHighPrice) / 2;
-                    }
-                    Log.d("Lyft Price", lyftPrice);
-
-                    String lyftTimeString = lyftTimeValue.getText().toString().split(" ")[0];
-                    String uberTimeString = uberTimeValue.getText().toString().split(" ")[0];
-                    int lyftTime = Integer.parseInt(lyftTimeString);
-                    int uberTime = Integer.parseInt(uberTimeString);
-
-                    if (lyftTime < uberTime) {
-                        launchLyftApp();
-                    } else if (lyftTime > uberTime) {
-                        launchUberApp();
-                    } else if (lyftTime == uberTime && Integer.parseInt(lyftPrice) < uberMedianPrice) {
-                        launchLyftApp();
-                    } else if (lyftTime == uberTime && Integer.parseInt(lyftPrice) > uberMedianPrice) {
-                        launchUberApp();
-                    } else {
-                        Snackbar.make(mapFrameLayout, "Price/distance the same for all apps. " +
-                                "Click logo to launch either app.", Snackbar.LENGTH_LONG)
+                    if (lyftPrice.contains("N/A") || uberPrice.contains("N/A")) {
+                        Snackbar.make(mapFrameLayout, "Invalid input.  Distance is > 100 miles",
+                                Snackbar.LENGTH_SHORT)
                                 .setAction("Dismiss", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -256,6 +250,40 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                                     }
                                 })
                                 .show();
+                    } else {
+                        String[] uberPriceArray = uberPrice.split("-");
+                        double uberMedianPrice = Integer.parseInt(uberPriceArray[0].substring(1));
+                        if (uberPriceArray.length > 1) {
+                            int uberLowPrice = Integer.parseInt(uberPriceArray[0].substring(1));
+                            int uberHighPrice = Integer.parseInt(uberPriceArray[1]);
+                            uberMedianPrice = (uberLowPrice + uberHighPrice) / 2;
+                        }
+                        Log.d("Lyft Price", lyftPrice);
+
+                        String lyftTimeString = lyftTimeValue.getText().toString().split(" ")[0];
+                        String uberTimeString = uberTimeValue.getText().toString().split(" ")[0];
+                        int lyftTime = Integer.parseInt(lyftTimeString);
+                        int uberTime = Integer.parseInt(uberTimeString);
+
+                        if (lyftTime < uberTime) {
+                            launchLyftApp();
+                        } else if (lyftTime > uberTime) {
+                            launchUberApp();
+                        } else if (lyftTime == uberTime && Integer.parseInt(lyftPrice) < uberMedianPrice) {
+                            launchLyftApp();
+                        } else if (lyftTime == uberTime && Integer.parseInt(lyftPrice) > uberMedianPrice) {
+                            launchUberApp();
+                        } else {
+                            Snackbar.make(mapFrameLayout, "Price/distance the same for all apps. " +
+                                    "Click logo to launch either app.", Snackbar.LENGTH_LONG)
+                                    .setAction("Dismiss", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+
+                                        }
+                                    })
+                                    .show();
+                        }
                     }
                 } else {
                     Snackbar.make(mapFrameLayout, "Please enter a valid pickup/dropoff address", Snackbar.LENGTH_SHORT)
@@ -536,6 +564,14 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                         PriceEstimate uberX = priceEstimateList.getPrices().get(0);
                         String uberXPriceEstimate = uberX.getEstimate();
                         uberPriceValue.setText(uberXPriceEstimate);
+                        uberPriceLabel.setPadding(dpToPixel(15), dpToPixel(20), dpToPixel(2), dpToPixel(0));
+                        uberTimeLabel.setPadding(dpToPixel(20), dpToPixel(20), dpToPixel(2), dpToPixel(0));
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.d("Retrofit error", error.toString());
+                        uberPriceValue.setText("N/A");
                         uberPriceLabel.setPadding(dpToPixel(15), dpToPixel(20), dpToPixel(2), dpToPixel(0));
                         uberTimeLabel.setPadding(dpToPixel(20), dpToPixel(20), dpToPixel(2), dpToPixel(0));
                     }
@@ -870,9 +906,12 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 finalPrice = new BigDecimal(6);
             }
 
-            Log.d("Final Price", finalPrice.toString());
+            String finalPriceString = (distanceInMiles > 100) ? "N/A" :
+                ("$" + finalPrice.setScale(0, RoundingMode.HALF_UP));
+
+            Log.d("Final Price", finalPriceString);
             //TODO Improve price formatter
-            lyftPriceValue.setText("$" + finalPrice.setScale(0, RoundingMode.HALF_UP));
+            lyftPriceValue.setText(finalPriceString);
             lyftPriceLabel.setPadding(dpToPixel(15), dpToPixel(20), dpToPixel(2), dpToPixel(0));
             lyftTimeLabel.setPadding(dpToPixel(20), dpToPixel(20), dpToPixel(2), dpToPixel(0));
             mainGoButton.setProgress(100);
