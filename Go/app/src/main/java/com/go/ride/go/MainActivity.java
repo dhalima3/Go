@@ -387,9 +387,15 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 googleMap.setTrafficEnabled(true);
                 googleMap.setBuildingsEnabled(true);
                 LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-                Criteria criteria = new Criteria();
-                String provider = locationManager.getBestProvider(criteria, true);
-                Location location = locationManager.getLastKnownLocation(provider);
+                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (location == null) {
+                    Criteria criteria = new Criteria();
+                    criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+                    String provider = locationManager.getBestProvider(criteria, true);
+                    location = locationManager.getLastKnownLocation(provider);
+                }
+
+                //TODO is this null check still necessary?
                 if (location != null) {
                     onLocationChanged(location);
                 }
@@ -807,6 +813,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
             String url = new String(urlBuilder);
             JSONObject jsonObject = jsonHelper.getJSONFromURL(url);
+            Log.d("JSONObject", jsonObject.toString());
             JSONArray rows = null;
             long duration = 1;
 
@@ -940,6 +947,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         @Override
         protected void onPostExecute(String result) {
             try {
+                Log.d("Address Marker List", addressMarkerList.toString());
                 sourceAutocomplete.setText(addressMarkerList.get(0).getAddressLine(0) + " " + addressMarkerList.get(0).getAddressLine(1) + " ");
                 sourceLatLng = new LatLng(latitude, longitude);
                 if (destinationLatLng != null) {
