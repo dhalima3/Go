@@ -194,8 +194,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                         }
                         Log.d("Lyft Price", lyftPrice);
 
-                        String lyftTimeString = lyftTimeValue.getText().toString().split(" ")[0];
-                        String uberTimeString = uberTimeValue.getText().toString().split(" ")[0];
+                        String lyftTimeString = lyftTimeValue.getText().toString().
+                            replaceAll("[\\D]", "");
+                        String uberTimeString = uberTimeValue.getText().toString().
+                            replaceAll("[\\D]", "");
                         int lyftTime = Integer.parseInt(lyftTimeString);
                         int uberTime = Integer.parseInt(uberTimeString);
 
@@ -259,8 +261,10 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                         }
                         Log.d("Lyft Price", lyftPrice);
 
-                        String lyftTimeString = lyftTimeValue.getText().toString().split(" ")[0];
-                        String uberTimeString = uberTimeValue.getText().toString().split(" ")[0];
+                        String lyftTimeString = lyftTimeValue.getText().toString().
+                            replaceAll("[\\D]", "");
+                        String uberTimeString = uberTimeValue.getText().toString().
+                            replaceAll("[\\D]", "");
                         int lyftTime = Integer.parseInt(lyftTimeString);
                         int uberTime = Integer.parseInt(uberTimeString);
 
