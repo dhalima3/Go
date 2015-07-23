@@ -1,6 +1,6 @@
-# Go
+# GoRide
 
-“Go” allows you to compare the price and waiting time of multiple car services, and lets you select the car service that is most suitable to you.
+“GoRide” allows you to compare the price and waiting time of multiple car services, and lets you select the car service that is most suitable to you.
 
 1) Set pick up and drop off location
 
