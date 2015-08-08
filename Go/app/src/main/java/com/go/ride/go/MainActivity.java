@@ -2,6 +2,7 @@ package com.go.ride.go;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -151,7 +152,11 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
 
         uberImageButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                launchUberApp();
+                if (sourceAutocomplete.getText().toString().length() > 10 && destinationAutocomplete.getText().toString().length() > 10) {
+                    launchUberApp();
+                } else {
+                    showSnackbar("Please enter a valid pickup/dropoff address");
+                }
             }
         });
 
@@ -175,15 +180,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     Log.d("Lyft Price", lyftPrice);
                     Log.d("Uber Price", uberPrice);
                     if (lyftPrice.contains("N/A") || uberPrice.contains("N/A")) {
-                        Snackbar.make(mapFrameLayout, "Invalid input.  Distance is > 100 miles",
-                                Snackbar.LENGTH_SHORT)
-                                .setAction("Dismiss", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-
-                                    }
-                                })
-                                .show();
+                        showSnackbar("Invalid input.  Distance is > 100 miles");
                     } else {
                         String[] uberPriceArray = uberPrice.split("-");
                         double uberMedianPrice = Integer.parseInt(uberPriceArray[0].substring(1));
@@ -210,26 +207,12 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                         } else if (Integer.parseInt(lyftPrice) == uberMedianPrice && lyftTime > uberTime) {
                             launchUberApp();
                         } else {
-                            Snackbar.make(mapFrameLayout, "Price/distance the same for all apps. " +
-                                    "Click logo to launch either app.", Snackbar.LENGTH_LONG)
-                                    .setAction("Dismiss", new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-
-                                        }
-                                    })
-                                    .show();
+                            showSnackbar("Price/distance the same for all apps. " +
+                                    "Click logo to launch either app.");
                         }
                     }
                 } else {
-                    Snackbar.make(mapFrameLayout, "Please enter a valid pickup/dropoff address", Snackbar.LENGTH_LONG)
-                            .setAction("Dismiss", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-
-                                }
-                            })
-                            .show();
+                    showSnackbar("Please enter a valid pickup/dropoff address");
                 }
             }
         });
@@ -242,15 +225,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                     String lyftPrice = lyftPriceValue.getText().toString().substring(1);
                     String uberPrice = uberPriceValue.getText().toString();
                     if (lyftPrice.contains("N/A") || uberPrice.contains("N/A")) {
-                        Snackbar.make(mapFrameLayout, "Invalid input.  Distance is > 100 miles",
-                                Snackbar.LENGTH_SHORT)
-                                .setAction("Dismiss", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-
-                                    }
-                                })
-                                .show();
+                        showSnackbar("Invalid input.  Distance is > 100 miles");
                     } else {
                         String[] uberPriceArray = uberPrice.split("-");
                         double uberMedianPrice = Integer.parseInt(uberPriceArray[0].substring(1));
@@ -277,26 +252,12 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                         } else if (lyftTime == uberTime && Integer.parseInt(lyftPrice) > uberMedianPrice) {
                             launchUberApp();
                         } else {
-                            Snackbar.make(mapFrameLayout, "Price/distance the same for all apps. " +
-                                    "Click logo to launch either app.", Snackbar.LENGTH_LONG)
-                                    .setAction("Dismiss", new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-
-                                        }
-                                    })
-                                    .show();
+                            showSnackbar("Price/distance the same for all apps. " +
+                                    "Click logo to launch either app.");
                         }
                     }
                 } else {
-                    Snackbar.make(mapFrameLayout, "Please enter a valid pickup/dropoff address", Snackbar.LENGTH_SHORT)
-                            .setAction("Dismiss", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-
-                                }
-                            })
-                            .show();
+                    showSnackbar("Please enter a valid pickup/dropoff address");
                 }
             }
         });
@@ -605,10 +566,17 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     }
 
     public void launchUberApp() {
-        if (uberLaunchIntent == null) {
+        Context context = getApplicationContext();
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            packageManager.getPackageInfo("com.ubercab", PackageManager.GET_ACTIVITIES);
+            uberLaunchIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("uber://?action=setPickup&product_id=91901472-f30d-4614-8ba7-9fcc937cebf5&pickup[latitude]="
+                            + sourceLatLng.latitude + "&pickup[longitude]=" + sourceLatLng.longitude + "&dropoff[latitude]="
+                            + destinationLatLng.latitude + "&dropoff[longitude]=" + destinationLatLng.longitude));
+
+        } catch (PackageManager.NameNotFoundException e) {
             launchPlayStore("com.ubercab");
-        } else {
-            startActivity(uberLaunchIntent);
         }
     }
 
@@ -634,6 +602,18 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         int px = (int) (dp * scale + 0.5f);
         return px;
     }
+
+    private void showSnackbar(String s) {
+        Snackbar.make(mapFrameLayout, s, Snackbar.LENGTH_LONG)
+                .setAction("Dismiss", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                })
+                .show();
+    }
+
 
     //TODO Remove
     public void hidePanel() {
@@ -661,14 +641,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 + connectionResult.getErrorCode());
 
         // TODO(Developer): Check error code and notify the user of error state and resolution.
-        Snackbar.make(mapFrameLayout, "Could not connect to Google API Client: Error", Snackbar.LENGTH_SHORT)
-                .setAction("Undo", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                })
-                .show();
+        showSnackbar("Could not connect to Google API Client: Error");
 
         // Disable API access in the adapter because the client was not initialised correctly.
         placeAutocompleteAdapter.setGoogleApiClient(null);
