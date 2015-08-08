@@ -576,9 +576,9 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             uberLaunchIntent.setData(
                     Uri.parse("uber://?action=setPickup&product_id=a1111c8c-c720-46c3-8534-2fcdd730040d&pickup[latitude]="
                             + sourceLatLng.latitude + "&pickup[longitude]="
-                            + sourceLatLng.longitude + "&pickup[nickname]=userSource&dropoff[latitude]="
+                            + sourceLatLng.longitude + "&dropoff[latitude]="
                             + destinationLatLng.latitude + "&dropoff[longitude]="
-                            + destinationLatLng.longitude + "&dropoff[nickname]=userDestination"));
+                            + destinationLatLng.longitude));
             startActivity(uberLaunchIntent);
         } catch (PackageManager.NameNotFoundException e) {
             launchPlayStore("com.ubercab");
