@@ -107,7 +107,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private Button fastestButton;
     private jsonHelper jsonHelper;
 
-    private Intent uberLaunchIntent;
     private Intent lyftLaunchIntent;
 
     private ActionProcessButton mainGoButton;
@@ -147,7 +146,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         mainGoButton = (ActionProcessButton) findViewById(R.id.mainGoButton);
         mapFrameLayout = (FrameLayout) findViewById(R.id.mapFrameLayout);
 
-        uberLaunchIntent = getPackageManager().getLaunchIntentForPackage("com.ubercab");
         lyftLaunchIntent = getPackageManager().getLaunchIntentForPackage("me.lyft.android");
 
         uberImageButton.setOnClickListener(new View.OnClickListener() {
@@ -570,11 +568,18 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         PackageManager packageManager = context.getPackageManager();
         try {
             packageManager.getPackageInfo("com.ubercab", PackageManager.GET_ACTIVITIES);
-            uberLaunchIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("uber://?action=setPickup&product_id=91901472-f30d-4614-8ba7-9fcc937cebf5&pickup[latitude]="
-                            + sourceLatLng.latitude + "&pickup[longitude]=" + sourceLatLng.longitude + "&dropoff[latitude]="
-                            + destinationLatLng.latitude + "&dropoff[longitude]=" + destinationLatLng.longitude));
-
+            Intent uberLaunchIntent = packageManager.getLaunchIntentForPackage("com.ubercab");
+            Log.d("Source Latitude", String.valueOf(sourceLatLng.latitude));
+            Log.d("Source Longitude", String.valueOf(sourceLatLng.longitude));
+            Log.d("Destination Latitude", String.valueOf(destinationLatLng.latitude));
+            Log.d("Destination Longitude", String.valueOf(destinationLatLng.longitude));
+            uberLaunchIntent.setData(
+                    Uri.parse("uber://?action=setPickup&product_id=a1111c8c-c720-46c3-8534-2fcdd730040d&pickup[latitude]="
+                            + sourceLatLng.latitude + "&pickup[longitude]="
+                            + sourceLatLng.longitude + "&pickup[nickname]=userSource&dropoff[latitude]="
+                            + destinationLatLng.latitude + "&dropoff[longitude]="
+                            + destinationLatLng.longitude + "&dropoff[nickname]=userDestination"));
+            startActivity(uberLaunchIntent);
         } catch (PackageManager.NameNotFoundException e) {
             launchPlayStore("com.ubercab");
         }
