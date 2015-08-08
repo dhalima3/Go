@@ -569,10 +569,6 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         try {
             packageManager.getPackageInfo("com.ubercab", PackageManager.GET_ACTIVITIES);
             Intent uberLaunchIntent = packageManager.getLaunchIntentForPackage("com.ubercab");
-            Log.d("Source Latitude", String.valueOf(sourceLatLng.latitude));
-            Log.d("Source Longitude", String.valueOf(sourceLatLng.longitude));
-            Log.d("Destination Latitude", String.valueOf(destinationLatLng.latitude));
-            Log.d("Destination Longitude", String.valueOf(destinationLatLng.longitude));
             uberLaunchIntent.setData(
                     Uri.parse("uber://?action=setPickup&product_id=a1111c8c-c720-46c3-8534-2fcdd730040d&pickup[latitude]="
                             + sourceLatLng.latitude + "&pickup[longitude]="
