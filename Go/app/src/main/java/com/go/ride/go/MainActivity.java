@@ -73,7 +73,8 @@ import java.util.Locale;
 import retrofit.RetrofitError;
 
 public class MainActivity extends ActionBarActivity implements LocationListener,
-        GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+        GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,
+        OnGetPrimeTimeAsyncCompleted {
 
     private GoogleMap googleMap;
     private TextView uberPriceLabel, uberTimeLabel, lyftPriceLabel, lyftTimeLabel;
@@ -103,6 +104,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
     private BigDecimal perMileFee;
     private BigDecimal perMinuteFee;
     private final BigDecimal trustSafetyFee = new BigDecimal(1.50);
+    private BigDecimal primeTimeFee = new BigDecimal(.5);
     private Button cheapestButton;
     private Button fastestButton;
     private jsonHelper jsonHelper;
@@ -403,6 +405,7 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                         try {
                             JSONObject lyftApiResponse = new JSONObject((String) response);
                             parseLyftApiResponse(lyftApiResponse);
+                            getLyftPrimeTime();
                             setLyftTimes();
                             setLyftPrice();
                         } catch (Exception e) {
@@ -469,6 +472,12 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
         }
 
         new GetDurationTimeAsync(shortestDriverLatitude, shortestDriverLongitude).execute();
+    }
+
+    private void getLyftPrimeTime() {
+        new GetPrimeTimeAsync(MainActivity.this, sourceLatLng.latitude,
+                sourceLatLng.longitude, destinationLatLng.latitude, destinationLatLng.longitude).
+                execute();
     }
 
     public void setLyftPrice() {
@@ -768,6 +777,11 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
                 .build();
     }
 
+    @Override
+    public void onGetPrimeTimeCompleted(Double primeTimeMultiplier) {
+        primeTimeFee = new BigDecimal(primeTimeMultiplier);
+    }
+
     public class GetDurationTimeAsync extends AsyncTask<String, Void, Long> {
         double destinationLatitude, destinationLongitude;
 
@@ -880,11 +894,13 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             Log.d("Per mile fee", perMileFee.toString());
             Log.d("Per minute fee", perMinuteFee.toString());
             Log.d("Trust/safety fee", trustSafetyFee.toString());
+            Log.d("PrimeTime fee", primeTimeFee.toString());
 
             finalPrice = pickupFee
                     .add(perMileFee.multiply(new BigDecimal(distanceInMiles)))
                     .add(perMinuteFee.multiply(new BigDecimal(durationInMinutes)))
                     .add(trustSafetyFee);
+            finalPrice.multiply(primeTimeFee);
 
             if (finalPrice.intValue() < 6) {
                 finalPrice = new BigDecimal(6);
@@ -938,4 +954,5 @@ public class MainActivity extends ActionBarActivity implements LocationListener,
             }
         }
     }
+
 }
