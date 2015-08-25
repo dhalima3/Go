@@ -26,8 +26,6 @@ public class SplashActivity extends Activity {
             Uri video = Uri.parse("android.resource://" + getPackageName() + "/"
                     + R.raw.atlanta_skyline);
             videoView.setVideoURI(video);
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//            requestWindowFeature(Window.FEATURE_NO_TITLE);
             videoView.setZOrderOnTop(true);
             videoView.setScrollBarStyle(VideoView.SCROLLBARS_OUTSIDE_OVERLAY);
 
